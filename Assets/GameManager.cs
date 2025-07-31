@@ -31,7 +31,7 @@ public class GameManager : Singleton<GameManager>
 
     private IEnumerator StartNextRoundAfterDelay()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         FerrisWheel.Instance.ClearWheel();
         DeckManager.Instance.RegenerateQueue();
