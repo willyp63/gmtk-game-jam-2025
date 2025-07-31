@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FerrisWheelQueue : MonoBehaviour
+public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
 {
     [SerializeField]
     private Animal animalPrefab;
@@ -12,9 +12,6 @@ public class FerrisWheelQueue : MonoBehaviour
 
     [SerializeField]
     private Transform newAnimalPosition;
-
-    [SerializeField]
-    private FerrisWheel ferrisWheel;
 
     // List of current animals in the queue
     private List<Animal> queueAnimals = new();
@@ -35,10 +32,61 @@ public class FerrisWheelQueue : MonoBehaviour
             animalPositions.Count
         );
 
-        // Create Animal instances for each animal data
+        // Start the animation coroutine
+        StartCoroutine(AnimateGenerateQueue(animalDataList));
+    }
+
+    private IEnumerator AnimateGenerateQueue(List<AnimalData> animalDataList)
+    {
+        // Calculate the distance from first animal position to new animal position
+        float distance = Vector3.Distance(animalPositions[0].position, newAnimalPosition.position);
+
+        // Create animals at their initial positions (off-screen to the left)
         for (int i = 0; i < animalDataList.Count && i < animalPositions.Count; i++)
         {
-            CreateAnimalInQueue(animalDataList[i], i);
+            Animal newAnimal = CreateAnimalInQueue(animalDataList[i], i);
+
+            // Set initial position off-screen to the left
+            Vector3 initialPosition = animalPositions[i].position - Vector3.right * distance;
+            newAnimal.transform.position = initialPosition;
+            newAnimal.SetIsMoving(true);
+        }
+
+        // Animate animals moving to their final positions
+        float animationDuration = 1.0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < animationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / animationDuration;
+
+            // Use smooth step for more natural movement
+            float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+
+            // Update each animal's position
+            for (int i = 0; i < queueAnimals.Count && i < animalPositions.Count; i++)
+            {
+                Animal animal = queueAnimals[i];
+                Vector3 startPosition = animalPositions[i].position - Vector3.right * distance;
+                Vector3 targetPosition = animalPositions[i].position;
+
+                animal.transform.position = Vector3.Lerp(
+                    startPosition,
+                    targetPosition,
+                    smoothProgress
+                );
+            }
+
+            yield return null;
+        }
+
+        // Ensure animals are exactly at their target positions
+        for (int i = 0; i < queueAnimals.Count && i < animalPositions.Count; i++)
+        {
+            queueAnimals[i].transform.position = animalPositions[i].position;
+            queueAnimals[i].UpdateSnapPosition();
+            queueAnimals[i].SetIsMoving(false);
         }
 
         OnQueueChanged?.Invoke();
@@ -60,14 +108,14 @@ public class FerrisWheelQueue : MonoBehaviour
         Animal newAnimal = Instantiate(animalPrefab, animalPosition.position, Quaternion.identity);
         newAnimal.transform.parent = animalPosition.gameObject.transform;
         newAnimal.transform.localPosition = Vector3.zero;
-        newAnimal.InitializeAnimal(animalData, ferrisWheel);
+        newAnimal.InitializeAnimal(animalData);
 
         // Create event handler and store it
         System.Action eventHandler = () =>
         {
-            if (ferrisWheel.CanLoadAnimal())
+            if (FerrisWheel.Instance.CanLoadAnimal())
             {
-                ferrisWheel.LoadAnimal(newAnimal);
+                FerrisWheel.Instance.LoadAnimal(newAnimal);
                 RemoveAnimal(newAnimal);
             }
         };
@@ -107,7 +155,7 @@ public class FerrisWheelQueue : MonoBehaviour
 
     private IEnumerator AnimateShiftAnimalsForward(int startIndex)
     {
-        float animationDuration = 0.3f; // Quick animation duration
+        float animationDuration = 0.5f; // Quick animation duration
         float elapsedTime = 0f;
 
         // Create new animal off-screen first if we have animals left in deck

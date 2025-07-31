@@ -4,24 +4,15 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    [SerializeField]
-    private FerrisWheelQueue ferrisWheelQueue;
-
-    [SerializeField]
-    private FerrisWheel ferrisWheel;
-
     private void Start()
     {
-        // Initialize the deck manager
-        DeckManager.Instance.InitializeDeck();
-        DeckManager.Instance.RegenerateQueue();
-
-        // Initialize the ferris wheel queue
-        ferrisWheelQueue.GenerateQueue();
-
         RoundManager.Instance.OnRoundStarted += OnRoundStarted;
         RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
         RoundManager.Instance.OnRoundFailed += OnRoundFailed;
+
+        DeckManager.Instance.InitializeDeck();
+        DeckManager.Instance.RegenerateQueue();
+        FerrisWheelQueue.Instance.GenerateQueue();
 
         RoundManager.Instance.StartFirstRound();
     }
@@ -34,6 +25,17 @@ public class GameManager : Singleton<GameManager>
     private void OnRoundCompleted()
     {
         Debug.Log("Round completed");
+
+        StartCoroutine(StartNextRoundAfterDelay());
+    }
+
+    private IEnumerator StartNextRoundAfterDelay()
+    {
+        yield return new WaitForSeconds(1f);
+
+        FerrisWheel.Instance.ClearWheel();
+        DeckManager.Instance.RegenerateQueue();
+        FerrisWheelQueue.Instance.GenerateQueue();
         RoundManager.Instance.AdvanceToNextRound();
     }
 

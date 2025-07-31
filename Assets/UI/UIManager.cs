@@ -22,9 +22,6 @@ public class UIManager : Singleton<UIManager>
     private List<Button> rotateButtons;
 
     [SerializeField]
-    private FerrisWheel ferrisWheel;
-
-    [SerializeField]
     private GameObject pointsIndicatorPrefab;
 
     [SerializeField]
@@ -116,7 +113,11 @@ public class UIManager : Singleton<UIManager>
 
     private void InitializePointsIndicators()
     {
-        if (ferrisWheel == null || pointsIndicatorPrefab == null || worldSpaceCanvas == null)
+        if (
+            FerrisWheel.Instance == null
+            || pointsIndicatorPrefab == null
+            || worldSpaceCanvas == null
+        )
         {
             Debug.LogError("UIManager: Missing required references!");
             return;
@@ -133,7 +134,7 @@ public class UIManager : Singleton<UIManager>
         pointsIndicators.Clear();
 
         // Get all cart hinges from the FerrisWheel
-        List<Cart> carts = ferrisWheel.Carts;
+        List<Cart> carts = FerrisWheel.Instance.Carts;
 
         // Create a points indicator for each cart hinge
         foreach (Cart cart in carts)
@@ -194,9 +195,9 @@ public class UIManager : Singleton<UIManager>
 
     private void OnRotateButtonClicked(int steps)
     {
-        if (ferrisWheel != null)
+        if (FerrisWheel.Instance != null)
         {
-            ferrisWheel.RotateWheel(false, steps);
+            FerrisWheel.Instance.RotateWheel(false, steps);
         }
     }
 }

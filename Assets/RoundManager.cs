@@ -34,7 +34,11 @@ public class RoundManager : Singleton<RoundManager>
     public int RequiredScore => requiredScore;
     public int EnergyPerDay => energyPerDay;
     public bool IsRoundComplete => currentScore >= requiredScore;
-    public bool IsRoundFailed => currentEnergy <= 0 && !IsRoundComplete;
+
+    private void Start()
+    {
+        FerrisWheel.Instance.OnWheelStopped += OnWheelStopped;
+    }
 
     public void StartFirstRound()
     {
@@ -56,6 +60,21 @@ public class RoundManager : Singleton<RoundManager>
         OnRoundStarted?.Invoke();
     }
 
+    private void OnWheelStopped()
+    {
+        if (currentEnergy <= 0)
+        {
+            if (IsRoundComplete)
+            {
+                OnRoundCompleted?.Invoke();
+            }
+            else
+            {
+                OnRoundFailed?.Invoke();
+            }
+        }
+    }
+
     private void ResetRound()
     {
         currentScore = 0;
@@ -72,11 +91,6 @@ public class RoundManager : Singleton<RoundManager>
 
         currentScore += points;
         OnScoreChanged?.Invoke();
-
-        if (IsRoundComplete)
-        {
-            OnRoundCompleted?.Invoke();
-        }
     }
 
     public bool ConsumeEnergy(int amount)
@@ -88,11 +102,6 @@ public class RoundManager : Singleton<RoundManager>
 
         currentEnergy -= amount;
         OnEnergyChanged?.Invoke();
-
-        if (IsRoundFailed)
-        {
-            OnRoundFailed?.Invoke();
-        }
 
         return true;
     }

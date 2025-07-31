@@ -14,8 +14,6 @@ public class Animal : MonoBehaviour
     private Cart assignedCart = null;
     public Cart AssignedCart => assignedCart;
 
-    private FerrisWheel ferrisWheel;
-
     [SerializeField]
     private SpriteRenderer spriteRenderer;
 
@@ -72,14 +70,17 @@ public class Animal : MonoBehaviour
             case AnimalEffectTarget.Adjacent:
                 return new List<Animal>
                 {
-                    ferrisWheel.GetAdjacentCart(true).CurrentAnimal,
-                    ferrisWheel.GetAdjacentCart(false).CurrentAnimal,
+                    FerrisWheel.Instance.GetAdjacentCart(true).CurrentAnimal,
+                    FerrisWheel.Instance.GetAdjacentCart(false).CurrentAnimal,
                 };
             case AnimalEffectTarget.Opposite:
-                return new List<Animal> { ferrisWheel.GetOppositeCart(AssignedCart).CurrentAnimal };
+                return new List<Animal>
+                {
+                    FerrisWheel.Instance.GetOppositeCart(AssignedCart).CurrentAnimal,
+                };
             case AnimalEffectTarget.All:
-                return ferrisWheel
-                    .Carts.Select(cart => cart.CurrentAnimal)
+                return FerrisWheel
+                    .Instance.Carts.Select(cart => cart.CurrentAnimal)
                     .Where(animal => animal != null)
                     .ToList();
             default:
@@ -97,10 +98,9 @@ public class Animal : MonoBehaviour
         snapPosition = transform.localPosition;
     }
 
-    public void InitializeAnimal(AnimalData animalData, FerrisWheel ferrisWheel)
+    public void InitializeAnimal(AnimalData animalData)
     {
         this.animalData = animalData;
-        this.ferrisWheel = ferrisWheel;
 
         UpdateSnapPosition();
 
@@ -204,7 +204,7 @@ public class Animal : MonoBehaviour
         transform.localPosition = snapPosition;
 
         // Check loading zone
-        if (ferrisWheel.LoadingZone.Contains(dragToPosition))
+        if (FerrisWheel.Instance.LoadingZone.Contains(dragToPosition))
         {
             OnDragToLoadingZone?.Invoke();
         }

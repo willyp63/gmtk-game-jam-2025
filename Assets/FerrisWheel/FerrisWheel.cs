@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FerrisWheel : MonoBehaviour
+public class FerrisWheel : Singleton<FerrisWheel>
 {
     [SerializeField]
     private List<Cart> carts = new(); // Cart #1 is initially at the top. Carts are in clockwise order.
@@ -24,6 +24,9 @@ public class FerrisWheel : MonoBehaviour
 
     private int topCartIndex = 0;
     private bool isRotating = false;
+
+    // Events
+    public System.Action OnWheelStopped;
 
     public bool CanLoadAnimal()
     {
@@ -154,9 +157,6 @@ public class FerrisWheel : MonoBehaviour
 
             bottomCart.UnloadAnimal();
 
-            // Add animal back to queue
-            DeckManager.Instance.EnqueueAnimal(animal.AnimalData);
-
             RoundManager.Instance.AddScore(animal.CurrentPoints);
 
             FloatingTextManager.Instance.SpawnText(
@@ -171,6 +171,7 @@ public class FerrisWheel : MonoBehaviour
         }
 
         isRotating = false;
+        OnWheelStopped?.Invoke();
     }
 
     // Smooth easing function for gradual acceleration and deceleration
@@ -224,5 +225,24 @@ public class FerrisWheel : MonoBehaviour
         // Draw loading zone
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(loadingZone.center, loadingZone.size);
+    }
+
+    public void ClearWheel()
+    {
+        // Unload all carts and destroy animals
+        foreach (Cart cart in carts)
+        {
+            if (!cart.IsEmpty)
+            {
+                Animal animal = cart.CurrentAnimal;
+                cart.UnloadAnimal();
+
+                // Destroy the animal immediately
+                if (animal != null)
+                {
+                    Destroy(animal.gameObject);
+                }
+            }
+        }
     }
 }
