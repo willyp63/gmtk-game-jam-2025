@@ -26,10 +26,12 @@ public class Animal : MonoBehaviour
     private Vector3 snapPosition;
     private bool isDragging = false;
     private Camera mainCamera;
+    private Collider2D collider;
 
     private void Awake()
     {
         mainCamera = Camera.main;
+        collider = GetComponent<Collider2D>();
     }
 
     private void Update()
@@ -126,9 +128,7 @@ public class Animal : MonoBehaviour
 
     private bool IsMouseOverAnimal(Vector3 mousePosition)
     {
-        // Simple distance-based check - can be improved with proper collider detection
-        float distance = Vector3.Distance(transform.position, mousePosition);
-        return distance < 1f; // Adjust this value based on your sprite size
+        return collider.OverlapPoint(mousePosition);
     }
 
     private void StopDragging()

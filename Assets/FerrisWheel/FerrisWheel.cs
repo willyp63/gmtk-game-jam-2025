@@ -16,6 +16,10 @@ public class FerrisWheel : MonoBehaviour
     public Bounds UnloadingZone => unloadingZone;
 
     [SerializeField]
+    private Transform unloadingLocation;
+    public Transform UnloadingLocation => unloadingLocation;
+
+    [SerializeField]
     private float rotationSpeed = 90f; // degrees per second
 
     [SerializeField]
@@ -41,7 +45,9 @@ public class FerrisWheel : MonoBehaviour
                 if (animal.AssignedCart == GetBottomCart())
                 {
                     animal.AssignedCart.UnloadAnimal();
-                    Destroy(animal.gameObject);
+
+                    // Move the animal to the unloading location, then animate it moving to the right 10 units, then destroy it
+                    StartCoroutine(AnimateAnimalUnloading(animal));
                 }
             };
         }
@@ -131,6 +137,41 @@ public class FerrisWheel : MonoBehaviour
         // Apply cubic easing: 3t² - 2t³
         // This creates a smooth curve with gradual start and end
         return t * t * (3f - 2f * t);
+    }
+
+    private IEnumerator AnimateAnimalUnloading(Animal animal)
+    {
+        if (animal == null || unloadingLocation == null)
+        {
+            Destroy(animal?.gameObject);
+            yield break;
+        }
+
+        // Ensure animal is exactly at unloading position
+        animal.transform.position = unloadingLocation.position;
+        animal.transform.rotation = Quaternion.identity;
+
+        // Animate animal moving to the right 10 units
+        Vector3 finalPosition = unloadingLocation.position + Vector3.right * 10f;
+        float moveRightDuration = 1.0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < moveRightDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / moveRightDuration;
+            float easedT = SmoothStep(t);
+
+            animal.transform.position = Vector3.Lerp(
+                unloadingLocation.position,
+                finalPosition,
+                easedT
+            );
+            yield return null;
+        }
+
+        // Destroy the animal
+        Destroy(animal.gameObject);
     }
 
     // Draw gizmos when the FerrisWheel is selected in the editor

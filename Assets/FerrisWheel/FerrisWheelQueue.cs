@@ -99,7 +99,67 @@ public class FerrisWheelQueue : MonoBehaviour
         queueAnimals.RemoveAt(animalIndex);
 
         // Shift remaining animals forward
-        ShiftAnimalsForward(animalIndex);
+        StartCoroutine(AnimateShiftAnimalsForward(animalIndex));
+    }
+
+    private IEnumerator AnimateShiftAnimalsForward(int startIndex)
+    {
+        float animationDuration = 0.3f; // Quick animation duration
+        float elapsedTime = 0f;
+
+        // Store starting positions for each animal that needs to move
+        Dictionary<Animal, Vector3> startPositions = new Dictionary<Animal, Vector3>();
+        Dictionary<Animal, Vector3> targetPositions = new Dictionary<Animal, Vector3>();
+
+        // Calculate start and target positions
+        for (int i = startIndex; i < queueAnimals.Count; i++)
+        {
+            if (i < animalPositions.Count)
+            {
+                Animal animal = queueAnimals[i];
+                startPositions[animal] = animal.transform.position;
+                targetPositions[animal] = animalPositions[i].position;
+            }
+        }
+
+        // Animate the movement
+        while (elapsedTime < animationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / animationDuration;
+
+            // Use smooth step for more natural movement
+            float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
+
+            // Update each animal's position
+            for (int i = startIndex; i < queueAnimals.Count; i++)
+            {
+                if (i < animalPositions.Count)
+                {
+                    Animal animal = queueAnimals[i];
+                    if (startPositions.ContainsKey(animal) && targetPositions.ContainsKey(animal))
+                    {
+                        animal.transform.position = Vector3.Lerp(
+                            startPositions[animal],
+                            targetPositions[animal],
+                            smoothProgress
+                        );
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
+        // Ensure animals are exactly at their target positions
+        for (int i = startIndex; i < queueAnimals.Count; i++)
+        {
+            if (i < animalPositions.Count)
+            {
+                queueAnimals[i].transform.position = animalPositions[i].position;
+                queueAnimals[i].UpdateSnapPosition();
+            }
+        }
 
         // Add new animal at the back if we have animals left in deck
         if (!DeckManager.Instance.IsQueueEmpty())
@@ -112,18 +172,6 @@ public class FerrisWheelQueue : MonoBehaviour
         }
 
         OnQueueChanged?.Invoke();
-    }
-
-    private void ShiftAnimalsForward(int startIndex)
-    {
-        for (int i = startIndex; i < queueAnimals.Count; i++)
-        {
-            if (i < animalPositions.Count)
-            {
-                queueAnimals[i].transform.position = animalPositions[i].position;
-                queueAnimals[i].UpdateSnapPosition();
-            }
-        }
     }
 
     private void ClearQueue()
