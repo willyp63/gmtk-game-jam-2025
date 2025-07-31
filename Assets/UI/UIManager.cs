@@ -1,9 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
+    [SerializeField]
+    private TextMeshProUGUI roundText;
+
+    [SerializeField]
+    private TextMeshProUGUI requiredPointsText;
+
+    [SerializeField]
+    private TextMeshProUGUI pointsText;
+
+    [SerializeField]
+    private Image energyBar;
+
+    [SerializeField]
+    private TextMeshProUGUI energyText;
+
+    [SerializeField]
+    private List<Button> rotateButtons;
+
     [SerializeField]
     private FerrisWheel ferrisWheel;
 
@@ -14,18 +34,95 @@ public class UIManager : Singleton<UIManager>
     private Canvas worldSpaceCanvas;
 
     [SerializeField]
-    private float yOffset = 2f;
+    private float pointsIndicatorYOffset = 2f;
+
+    [SerializeField]
+    private float pointsIndicatorXOffset = 0f;
 
     private List<PointsIndicator> pointsIndicators = new List<PointsIndicator>();
 
     private void Start()
     {
         InitializePointsIndicators();
+        InitializeRotateButtons();
+        SubscribeToRoundManagerEvents();
+        UpdateAllDisplays();
+    }
+
+    private void SubscribeToRoundManagerEvents()
+    {
+        if (RoundManager.Instance != null)
+        {
+            RoundManager.Instance.OnScoreChanged += UpdateScoreDisplay;
+            RoundManager.Instance.OnEnergyChanged += UpdateEnergyDisplay;
+            RoundManager.Instance.OnRoundStarted += UpdateRoundDisplay;
+        }
+    }
+
+    private void UpdateAllDisplays()
+    {
+        UpdateRoundDisplay();
+        UpdateScoreDisplay();
+        UpdateEnergyDisplay();
+    }
+
+    private void UpdateRoundDisplay()
+    {
+        if (roundText != null)
+        {
+            roundText.text = $"Round {RoundManager.Instance.CurrentRound}";
+        }
+    }
+
+    private void UpdateScoreDisplay()
+    {
+        if (pointsText != null)
+        {
+            pointsText.text = $"{RoundManager.Instance.CurrentScore:N0} PTS";
+        }
+
+        if (requiredPointsText != null)
+        {
+            requiredPointsText.text = $"{RoundManager.Instance.RequiredScore:N0} PTS";
+        }
+    }
+
+    private void UpdateEnergyDisplay()
+    {
+        if (energyText != null)
+        {
+            energyText.text =
+                $"{RoundManager.Instance.CurrentEnergy} / {RoundManager.Instance.EnergyPerDay}";
+        }
+
+        if (energyBar != null)
+        {
+            float fillAmount =
+                (float)RoundManager.Instance.CurrentEnergy / RoundManager.Instance.EnergyPerDay;
+            energyBar.fillAmount = Mathf.Clamp01(fillAmount);
+        }
     }
 
     private void Update()
     {
         UpdatePointsIndicators();
+        CheckRotateButtons();
+    }
+
+    private void CheckRotateButtons()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            OnRotateButtonClicked(1);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            OnRotateButtonClicked(2);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            OnRotateButtonClicked(3);
+        }
     }
 
     private void InitializePointsIndicators()
@@ -62,7 +159,12 @@ public class UIManager : Singleton<UIManager>
 
                 if (indicator != null)
                 {
-                    indicator.Initialize(cart, worldSpaceCanvas, yOffset);
+                    indicator.Initialize(
+                        cart,
+                        worldSpaceCanvas,
+                        pointsIndicatorXOffset,
+                        pointsIndicatorYOffset
+                    );
                     pointsIndicators.Add(indicator);
                 }
             }
@@ -78,6 +180,34 @@ public class UIManager : Singleton<UIManager>
                 indicator.UpdatePosition();
                 indicator.UpdatePoints();
             }
+        }
+    }
+
+    private void InitializeRotateButtons()
+    {
+        if (rotateButtons == null || rotateButtons.Count == 0)
+        {
+            Debug.LogWarning("UIManager: No rotate buttons assigned!");
+            return;
+        }
+
+        for (int i = 0; i < rotateButtons.Count; i++)
+        {
+            int steps = i + 1; // First button = 1 step, second button = 2 steps, etc.
+            Button button = rotateButtons[i];
+
+            if (button != null)
+            {
+                button.onClick.AddListener(() => OnRotateButtonClicked(steps));
+            }
+        }
+    }
+
+    private void OnRotateButtonClicked(int steps)
+    {
+        if (ferrisWheel != null)
+        {
+            ferrisWheel.RotateWheel(false, steps);
         }
     }
 }

@@ -18,21 +18,27 @@ public class GameManager : Singleton<GameManager>
 
         // Initialize the ferris wheel queue
         ferrisWheelQueue.GenerateQueue();
+
+        RoundManager.Instance.OnRoundStarted += OnRoundStarted;
+        RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
+        RoundManager.Instance.OnRoundFailed += OnRoundFailed;
+
+        RoundManager.Instance.StartFirstRound();
     }
 
-    private void Update()
+    private void OnRoundStarted()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ferrisWheel.RotateWheel(false, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ferrisWheel.RotateWheel(false, 2);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ferrisWheel.RotateWheel(false, 3);
-        }
+        Debug.Log("Round started");
+    }
+
+    private void OnRoundCompleted()
+    {
+        Debug.Log("Round completed");
+        RoundManager.Instance.AdvanceToNextRound();
+    }
+
+    private void OnRoundFailed()
+    {
+        Debug.Log("Round failed");
     }
 }

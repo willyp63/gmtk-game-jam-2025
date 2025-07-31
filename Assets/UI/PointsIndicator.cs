@@ -10,18 +10,20 @@ public class PointsIndicator : MonoBehaviour
     private ShakeBehavior shakeBehavior;
 
     private Cart targetCart;
-    private float yOffset = 2f;
+    private float xOffset = 0f;
+    private float yOffset = 0f;
     private int points = 0;
 
     private Camera mainCamera;
     private Canvas worldSpaceCanvas;
 
-    public void Initialize(Cart cart, Canvas canvas, float offset = 2f)
+    public void Initialize(Cart cart, Canvas canvas, float xOffset = 0f, float yOffset = 2f)
     {
         points = 0;
         targetCart = cart;
         worldSpaceCanvas = canvas;
-        yOffset = offset;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         mainCamera = Camera.main;
 
         if (pointsText == null)
@@ -36,7 +38,8 @@ public class PointsIndicator : MonoBehaviour
             return;
 
         // Calculate the world position above the hinge
-        Vector3 worldPosition = targetCart.Hinge.position + Vector3.up * yOffset;
+        Vector3 worldPosition =
+            targetCart.Hinge.position + Vector3.up * yOffset + Vector3.right * xOffset;
 
         // Convert world position to screen position
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(worldPosition);

@@ -37,6 +37,7 @@ public class FerrisWheel : MonoBehaviour
         {
             bottomCart.LoadAnimal(animal);
 
+            animal.SetDragable(false);
             animal.ApplyEffects(AnimalEffectTrigger.OnLoad);
         }
     }
@@ -68,18 +69,15 @@ public class FerrisWheel : MonoBehaviour
         if (isRotating)
             return;
 
+        if (!RoundManager.Instance.ConsumeEnergy(steps))
+            return;
+
         StartCoroutine(Rotate(isClockwise, steps));
     }
 
     private IEnumerator Rotate(bool isClockwise, int steps)
     {
         isRotating = true;
-
-        // Update the dragable status of the animals
-        foreach (Cart cart in carts)
-        {
-            cart.CurrentAnimal?.SetDragable(false);
-        }
 
         float angle = (isClockwise ? -rotationAngle : rotationAngle) * steps;
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 0, angle);
@@ -149,6 +147,8 @@ public class FerrisWheel : MonoBehaviour
 
             bottomCart.UnloadAnimal();
 
+            RoundManager.Instance.AddScore(animal.CurrentPoints);
+
             FloatingTextManager.Instance.SpawnText(
                 $"+{animal.CurrentPoints}",
                 animal.transform.position,
@@ -158,12 +158,6 @@ public class FerrisWheel : MonoBehaviour
 
             // Move the animal to the unloading location, then animate it moving to the right 10 units, then destroy it
             StartCoroutine(AnimateAnimalUnloading(animal));
-        }
-
-        // Update the dragable status of the animals
-        foreach (Cart cart in carts)
-        {
-            cart.CurrentAnimal?.SetDragable(cart == bottomCart);
         }
 
         isRotating = false;
