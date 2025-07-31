@@ -54,6 +54,11 @@ public class DeckManager : Singleton<DeckManager>
         return result;
     }
 
+    public void EnqueueAnimal(AnimalData animal)
+    {
+        animalQueue.Enqueue(animal);
+    }
+
     public void AddAnimalToDeck(AnimalData animal)
     {
         playerDeck.Add(animal);

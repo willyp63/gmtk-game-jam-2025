@@ -5,13 +5,13 @@ using UnityEngine;
 public class FerrisWheelQueue : MonoBehaviour
 {
     [SerializeField]
-    private int maxAnimals = 4;
-
-    [SerializeField]
     private Animal animalPrefab;
 
     [SerializeField]
     private List<Transform> animalPositions = new();
+
+    [SerializeField]
+    private Transform newAnimalPosition;
 
     [SerializeField]
     private FerrisWheel ferrisWheel;
@@ -31,7 +31,9 @@ public class FerrisWheelQueue : MonoBehaviour
         ClearQueue();
 
         // Get animals from the deck manager
-        List<AnimalData> animalDataList = DeckManager.Instance.DequeueAnimals(maxAnimals);
+        List<AnimalData> animalDataList = DeckManager.Instance.DequeueAnimals(
+            animalPositions.Count
+        );
 
         // Create Animal instances for each animal data
         for (int i = 0; i < animalDataList.Count && i < animalPositions.Count; i++)
@@ -42,22 +44,21 @@ public class FerrisWheelQueue : MonoBehaviour
         OnQueueChanged?.Invoke();
     }
 
-    private void CreateAnimalInQueue(AnimalData animalData, int position)
+    private Animal CreateAnimalInQueue(AnimalData animalData, int position)
     {
-        if (position >= animalPositions.Count)
+        if (position > animalPositions.Count)
         {
             Debug.LogError(
                 $"Position {position} is out of bounds. Max positions: {animalPositions.Count}"
             );
-            return;
+            return null;
         }
 
-        Animal newAnimal = Instantiate(
-            animalPrefab,
-            animalPositions[position].position,
-            Quaternion.identity
-        );
-        newAnimal.transform.parent = animalPositions[position].gameObject.transform;
+        Transform animalPosition =
+            position == animalPositions.Count ? newAnimalPosition : animalPositions[position];
+
+        Animal newAnimal = Instantiate(animalPrefab, animalPosition.position, Quaternion.identity);
+        newAnimal.transform.parent = animalPosition.gameObject.transform;
         newAnimal.transform.localPosition = Vector3.zero;
         newAnimal.InitializeAnimal(animalData, ferrisWheel);
 
@@ -79,6 +80,8 @@ public class FerrisWheelQueue : MonoBehaviour
 
         // Add to queue list
         queueAnimals.Add(newAnimal);
+
+        return newAnimal;
     }
 
     public void RemoveAnimal(Animal animal)
@@ -107,11 +110,21 @@ public class FerrisWheelQueue : MonoBehaviour
         float animationDuration = 0.3f; // Quick animation duration
         float elapsedTime = 0f;
 
-        // Store starting positions for each animal that needs to move
+        // Create new animal off-screen first if we have animals left in deck
+        if (!DeckManager.Instance.IsQueueEmpty())
+        {
+            List<AnimalData> newAnimalData = DeckManager.Instance.DequeueAnimals(1);
+            if (newAnimalData.Count > 0)
+            {
+                CreateAnimalInQueue(newAnimalData[0], animalPositions.Count);
+            }
+        }
+
+        // Store starting positions for each animal that needs to move (including new animal)
         Dictionary<Animal, Vector3> startPositions = new Dictionary<Animal, Vector3>();
         Dictionary<Animal, Vector3> targetPositions = new Dictionary<Animal, Vector3>();
 
-        // Calculate start and target positions
+        // Calculate start and target positions for all animals that need to move
         for (int i = startIndex; i < queueAnimals.Count; i++)
         {
             if (i < animalPositions.Count)
@@ -119,10 +132,12 @@ public class FerrisWheelQueue : MonoBehaviour
                 Animal animal = queueAnimals[i];
                 startPositions[animal] = animal.transform.position;
                 targetPositions[animal] = animalPositions[i].position;
+
+                animal.SetIsMoving(true);
             }
         }
 
-        // Animate the movement
+        // Animate all animals moving simultaneously
         while (elapsedTime < animationDuration)
         {
             elapsedTime += Time.deltaTime;
@@ -131,7 +146,7 @@ public class FerrisWheelQueue : MonoBehaviour
             // Use smooth step for more natural movement
             float smoothProgress = Mathf.SmoothStep(0f, 1f, progress);
 
-            // Update each animal's position
+            // Update each animal's position simultaneously
             for (int i = startIndex; i < queueAnimals.Count; i++)
             {
                 if (i < animalPositions.Count)
@@ -158,16 +173,7 @@ public class FerrisWheelQueue : MonoBehaviour
             {
                 queueAnimals[i].transform.position = animalPositions[i].position;
                 queueAnimals[i].UpdateSnapPosition();
-            }
-        }
-
-        // Add new animal at the back if we have animals left in deck
-        if (!DeckManager.Instance.IsQueueEmpty())
-        {
-            List<AnimalData> newAnimalData = DeckManager.Instance.DequeueAnimals(1);
-            if (newAnimalData.Count > 0)
-            {
-                CreateAnimalInQueue(newAnimalData[0], queueAnimals.Count);
+                queueAnimals[i].SetIsMoving(false);
             }
         }
 

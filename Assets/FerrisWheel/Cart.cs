@@ -8,6 +8,15 @@ public class Cart : MonoBehaviour
     private Transform hinge;
     public Transform Hinge => hinge;
 
+    [SerializeField]
+    private SpriteRenderer spriteRenderer;
+
+    [SerializeField]
+    private Sprite closedSprite;
+
+    [SerializeField]
+    private Sprite openSprite;
+
     private Animal currentAnimal;
     public Animal CurrentAnimal => currentAnimal;
 
@@ -28,5 +37,17 @@ public class Cart : MonoBehaviour
         currentAnimal.RemoveFromCart();
         currentAnimal.transform.parent = null;
         currentAnimal = null;
+    }
+
+    public void SetOpen(bool isOpen)
+    {
+        if (isOpen)
+        {
+            spriteRenderer.sprite = openSprite;
+        }
+        else
+        {
+            spriteRenderer.sprite = closedSprite;
+        }
     }
 }

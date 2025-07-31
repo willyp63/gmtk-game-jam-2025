@@ -6,14 +6,8 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [TextArea(3, 10)]
     public string tooltipText = "Default tooltip text";
 
-    [SerializeField]
-    private TooltipDirection tooltipDirection = TooltipDirection.Above;
-
-    [SerializeField]
-    private float tooltipOffset = 100f;
-
-    [SerializeField]
-    private bool isWorldPosition = false;
+    [TextArea(3, 10)]
+    public string tooltipTextRight = "";
 
     [SerializeField]
     private bool useUIEvents = true; // Toggle between UI events and physics raycasting
@@ -25,6 +19,9 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private float raycastDistance = 100f;
 
     public float showDelay = 0.5f;
+
+    [SerializeField]
+    private bool tooltipEnabled = true; // Whether the tooltip functionality is enabled
 
     private bool isHovering = false;
     private float hoverTimer = 0f;
@@ -50,7 +47,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (useUIEvents)
+        if (useUIEvents && tooltipEnabled)
         {
             StartHover();
         }
@@ -58,7 +55,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (useUIEvents)
+        if (useUIEvents && tooltipEnabled)
         {
             StopHover();
         }
@@ -66,23 +63,17 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void Update()
     {
-        if (!useUIEvents)
+        if (!useUIEvents && tooltipEnabled)
         {
             CheckMouseHover();
         }
 
-        if (isHovering)
+        if (isHovering && tooltipEnabled)
         {
             hoverTimer += Time.deltaTime;
             if (hoverTimer >= showDelay)
             {
-                TooltipUIManager.Instance.ShowTooltip(
-                    tooltipText,
-                    transform.position,
-                    tooltipOffset,
-                    tooltipDirection,
-                    isWorldPosition
-                );
+                TooltipUIManager.Instance.ShowTooltip(tooltipText, tooltipTextRight);
                 hoverTimer = 0f; // Reset to prevent multiple calls
             }
         }
@@ -138,6 +129,9 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void StartHover()
     {
+        if (!tooltipEnabled)
+            return;
+
         isHovering = true;
         hoverTimer = 0f;
     }
@@ -150,8 +144,26 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     }
 
     // Method to update tooltip text dynamically
-    public void SetTooltipText(string newText)
+    public void SetTooltipText(string newText, string newTextRight = "")
     {
         tooltipText = newText;
+        tooltipTextRight = newTextRight;
+    }
+
+    // Method to enable the tooltip
+    public void EnableTooltip()
+    {
+        tooltipEnabled = true;
+    }
+
+    // Method to disable the tooltip
+    public void DisableTooltip()
+    {
+        tooltipEnabled = false;
+        // Hide tooltip if it's currently showing
+        if (isHovering)
+        {
+            StopHover();
+        }
     }
 }

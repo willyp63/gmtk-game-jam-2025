@@ -79,12 +79,18 @@ public class FerrisWheel : MonoBehaviour
     {
         isRotating = true;
 
+        foreach (Cart cart in carts)
+        {
+            cart.SetOpen(false);
+        }
+
         float angle = (isClockwise ? -rotationAngle : rotationAngle) * steps;
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 0, angle);
 
         Quaternion startRotation = transform.rotation;
+        float adjustedRotationSpeed = rotationSpeed * (1 + (steps - 1) * 0.15f);
         float elapsedTime = 0f;
-        float duration = Mathf.Abs(angle) / rotationSpeed;
+        float duration = Mathf.Abs(angle) / adjustedRotationSpeed;
         int currentStep = 1;
 
         while (elapsedTime < duration)
@@ -140,12 +146,16 @@ public class FerrisWheel : MonoBehaviour
 
         // Unload animal in bottom cart
         Cart bottomCart = GetBottomCart();
+        bottomCart.SetOpen(true);
         if (!bottomCart.IsEmpty)
         {
             Animal animal = bottomCart.CurrentAnimal;
             animal.ApplyEffects(AnimalEffectTrigger.OnUnload);
 
             bottomCart.UnloadAnimal();
+
+            // Add animal back to queue
+            DeckManager.Instance.EnqueueAnimal(animal.AnimalData);
 
             RoundManager.Instance.AddScore(animal.CurrentPoints);
 
@@ -178,6 +188,8 @@ public class FerrisWheel : MonoBehaviour
             Destroy(animal?.gameObject);
             yield break;
         }
+
+        animal.SetIsMoving(true);
 
         // Ensure animal is exactly at unloading position
         animal.transform.position = unloadingLocation.position;

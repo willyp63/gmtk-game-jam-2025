@@ -19,6 +19,9 @@ public class Animal : MonoBehaviour
     [SerializeField]
     private SpriteRenderer spriteRenderer;
 
+    [SerializeField]
+    private TooltipTrigger tooltipTrigger;
+
     public System.Action OnDragToLoadingZone;
 
     // Drag and drop variables
@@ -27,11 +30,13 @@ public class Animal : MonoBehaviour
     private bool isDragging = false;
     private Camera mainCamera;
     private Collider2D dragCollider;
+    private Animator animator;
 
     private void Awake()
     {
         mainCamera = Camera.main;
         dragCollider = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -82,6 +87,11 @@ public class Animal : MonoBehaviour
         }
     }
 
+    public void SetIsMoving(bool isMoving)
+    {
+        animator.SetBool("IsMoving", isMoving);
+    }
+
     public void UpdateSnapPosition()
     {
         snapPosition = transform.localPosition;
@@ -104,6 +114,15 @@ public class Animal : MonoBehaviour
 
             // Set initial points
             currentPoints = animalData.basePoints;
+
+            // Set tooltip text
+            if (tooltipTrigger != null)
+            {
+                tooltipTrigger.SetTooltipText(
+                    animalData.GetTooltipText(),
+                    animalData.GetTooltipTextRight()
+                );
+            }
         }
     }
 
