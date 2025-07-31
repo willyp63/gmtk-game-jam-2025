@@ -16,9 +16,6 @@ public class UIManager : Singleton<UIManager>
     private TextMeshProUGUI pointsText;
 
     [SerializeField]
-    private Image energyBar;
-
-    [SerializeField]
     private TextMeshProUGUI energyText;
 
     [SerializeField]
@@ -91,15 +88,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (energyText != null)
         {
-            energyText.text =
-                $"{RoundManager.Instance.CurrentEnergy} / {RoundManager.Instance.EnergyPerDay}";
-        }
-
-        if (energyBar != null)
-        {
-            float fillAmount =
-                (float)RoundManager.Instance.CurrentEnergy / RoundManager.Instance.EnergyPerDay;
-            energyBar.fillAmount = Mathf.Clamp01(fillAmount);
+            energyText.text = $"{RoundManager.Instance.CurrentEnergy}";
         }
     }
 
