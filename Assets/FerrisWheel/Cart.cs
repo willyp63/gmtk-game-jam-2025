@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Cart : MonoBehaviour
 {
+    [SerializeField]
+    private Transform hinge;
+    public Transform Hinge => hinge;
+
     private Animal currentAnimal;
     public Animal CurrentAnimal => currentAnimal;
 

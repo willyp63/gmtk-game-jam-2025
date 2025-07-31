@@ -26,10 +26,11 @@ public class FloatingText : MonoBehaviour
     private Vector3 randomOffset;
     private Vector3 riseDirection;
 
-    public void Initialize(string text, Vector3 worldPosition, Color color)
+    public void Initialize(string text, Vector3 worldPosition, Color color, float fontSize = 1f)
     {
         textComponent.text = text;
         textComponent.color = color;
+        textComponent.fontSize *= fontSize;
 
         // Add random offset to initial position
         randomOffset = new Vector3(

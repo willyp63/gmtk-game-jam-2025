@@ -22,14 +22,17 @@ public class GameManager : Singleton<GameManager>
 
     private void Update()
     {
-        // Handle ferris wheel rotation with arrow keys
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            ferrisWheel.RotateWheel(false); // Counter-clockwise
+            ferrisWheel.RotateWheel(false, 1);
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            ferrisWheel.RotateWheel(true); // Clockwise
+            ferrisWheel.RotateWheel(false, 2);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            ferrisWheel.RotateWheel(false, 3);
         }
     }
 }

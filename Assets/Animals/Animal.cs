@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Animal : MonoBehaviour
@@ -19,24 +20,66 @@ public class Animal : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     public System.Action OnDragToLoadingZone;
-    public System.Action OnDragToUnloadingZone;
 
     // Drag and drop variables
     private bool isDragable = true;
     private Vector3 snapPosition;
     private bool isDragging = false;
     private Camera mainCamera;
-    private Collider2D collider;
+    private Collider2D dragCollider;
 
     private void Awake()
     {
         mainCamera = Camera.main;
-        collider = GetComponent<Collider2D>();
+        dragCollider = GetComponent<Collider2D>();
     }
 
     private void Update()
     {
         HandleDragAndDrop();
+    }
+
+    public void ApplyEffects(AnimalEffectTrigger trigger)
+    {
+        if (animalData == null)
+            return;
+
+        foreach (AnimalEffectData effect in animalData.effects)
+        {
+            if (effect.trigger == trigger)
+            {
+                Debug.Log($"Applying effect {effect.type} to {this.animalData.animalName}");
+                List<Animal> targets = GetEffectTargets(effect);
+                foreach (Animal target in targets)
+                {
+                    AnimalData.ApplyEffect(effect, target);
+                }
+            }
+        }
+    }
+
+    private List<Animal> GetEffectTargets(AnimalEffectData effect)
+    {
+        switch (effect.target)
+        {
+            case AnimalEffectTarget.Self:
+                return new List<Animal> { this };
+            case AnimalEffectTarget.Adjacent:
+                return new List<Animal>
+                {
+                    ferrisWheel.GetAdjacentCart(true).CurrentAnimal,
+                    ferrisWheel.GetAdjacentCart(false).CurrentAnimal,
+                };
+            case AnimalEffectTarget.Opposite:
+                return new List<Animal> { ferrisWheel.GetOppositeCart(AssignedCart).CurrentAnimal };
+            case AnimalEffectTarget.All:
+                return ferrisWheel
+                    .Carts.Select(cart => cart.CurrentAnimal)
+                    .Where(animal => animal != null)
+                    .ToList();
+            default:
+                return new List<Animal>();
+        }
     }
 
     public void UpdateSnapPosition()
@@ -46,6 +89,7 @@ public class Animal : MonoBehaviour
 
     public void InitializeAnimal(AnimalData animalData, FerrisWheel ferrisWheel)
     {
+        this.animalData = animalData;
         this.ferrisWheel = ferrisWheel;
 
         UpdateSnapPosition();
@@ -128,7 +172,7 @@ public class Animal : MonoBehaviour
 
     private bool IsMouseOverAnimal(Vector3 mousePosition)
     {
-        return collider.OverlapPoint(mousePosition);
+        return dragCollider.OverlapPoint(mousePosition);
     }
 
     private void StopDragging()
@@ -144,11 +188,6 @@ public class Animal : MonoBehaviour
         if (ferrisWheel.LoadingZone.Contains(dragToPosition))
         {
             OnDragToLoadingZone?.Invoke();
-        }
-        // Check unloading zone
-        else if (ferrisWheel.UnloadingZone.Contains(dragToPosition))
-        {
-            OnDragToUnloadingZone?.Invoke();
         }
     }
 }

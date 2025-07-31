@@ -6,14 +6,11 @@ public class FerrisWheel : MonoBehaviour
 {
     [SerializeField]
     private List<Cart> carts = new(); // Cart #1 is initially at the top. Carts are in clockwise order.
+    public List<Cart> Carts => carts;
 
     [SerializeField]
     private Bounds loadingZone;
     public Bounds LoadingZone => loadingZone;
-
-    [SerializeField]
-    private Bounds unloadingZone;
-    public Bounds UnloadingZone => unloadingZone;
 
     [SerializeField]
     private Transform unloadingLocation;
@@ -40,16 +37,7 @@ public class FerrisWheel : MonoBehaviour
         {
             bottomCart.LoadAnimal(animal);
 
-            animal.OnDragToUnloadingZone += () =>
-            {
-                if (animal.AssignedCart == GetBottomCart())
-                {
-                    animal.AssignedCart.UnloadAnimal();
-
-                    // Move the animal to the unloading location, then animate it moving to the right 10 units, then destroy it
-                    StartCoroutine(AnimateAnimalUnloading(animal));
-                }
-            };
+            animal.ApplyEffects(AnimalEffectTrigger.OnLoad);
         }
     }
 
@@ -75,15 +63,15 @@ public class FerrisWheel : MonoBehaviour
         return carts[(index + carts.Count / 2) % carts.Count];
     }
 
-    public void RotateWheel(bool isClockwise)
+    public void RotateWheel(bool isClockwise, int steps)
     {
         if (isRotating)
             return;
 
-        StartCoroutine(Rotate(isClockwise));
+        StartCoroutine(Rotate(isClockwise, steps));
     }
 
-    private IEnumerator Rotate(bool isClockwise)
+    private IEnumerator Rotate(bool isClockwise, int steps)
     {
         isRotating = true;
 
@@ -93,12 +81,13 @@ public class FerrisWheel : MonoBehaviour
             cart.CurrentAnimal?.SetDragable(false);
         }
 
-        float angle = isClockwise ? rotationAngle : -rotationAngle;
+        float angle = (isClockwise ? -rotationAngle : rotationAngle) * steps;
         Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 0, angle);
 
         Quaternion startRotation = transform.rotation;
         float elapsedTime = 0f;
-        float duration = Mathf.Abs(rotationAngle) / rotationSpeed;
+        float duration = Mathf.Abs(angle) / rotationSpeed;
+        int currentStep = 1;
 
         while (elapsedTime < duration)
         {
@@ -111,6 +100,23 @@ public class FerrisWheel : MonoBehaviour
             // Use smooth interpolation for the rotation
             transform.rotation = Quaternion.Lerp(startRotation, targetRotation, easedT);
 
+            // After each rotationAngle, apply OnRotate to all animals
+            float deltaAngle = Mathf.Abs(
+                transform.rotation.eulerAngles.z - startRotation.eulerAngles.z
+            );
+            if (currentStep < steps && deltaAngle >= rotationAngle * currentStep)
+            {
+                topCartIndex = (topCartIndex + (isClockwise ? -1 : 1) + carts.Count) % carts.Count;
+                currentStep++;
+
+                foreach (Cart cart in carts)
+                {
+                    cart.CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnRotate);
+                }
+                GetTopCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassTop);
+                GetBottomCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassBottom);
+            }
+
             yield return null;
         }
 
@@ -118,11 +124,43 @@ public class FerrisWheel : MonoBehaviour
         transform.rotation = targetRotation;
 
         // Update the top cart index
-        topCartIndex = (topCartIndex + (isClockwise ? 1 : -1) + carts.Count) % carts.Count;
-        Debug.Log($"Top cart index: {topCartIndex}");
+        topCartIndex = (topCartIndex + (isClockwise ? -1 : 1) + carts.Count) % carts.Count;
+
+        foreach (Cart cart in carts)
+        {
+            cart.CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnRotate);
+        }
+        GetTopCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassTop);
+        GetBottomCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassBottom);
+
+        foreach (Cart cart in carts)
+        {
+            cart.CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnStop);
+        }
+        GetTopCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnStopTop);
+        GetBottomCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnStopBottom);
+
+        // Unload animal in bottom cart
+        Cart bottomCart = GetBottomCart();
+        if (!bottomCart.IsEmpty)
+        {
+            Animal animal = bottomCart.CurrentAnimal;
+            animal.ApplyEffects(AnimalEffectTrigger.OnUnload);
+
+            bottomCart.UnloadAnimal();
+
+            FloatingTextManager.Instance.SpawnText(
+                $"+{animal.CurrentPoints}",
+                animal.transform.position,
+                FloatingTextManager.pointsColor,
+                1.5f
+            );
+
+            // Move the animal to the unloading location, then animate it moving to the right 10 units, then destroy it
+            StartCoroutine(AnimateAnimalUnloading(animal));
+        }
 
         // Update the dragable status of the animals
-        Cart bottomCart = GetBottomCart();
         foreach (Cart cart in carts)
         {
             cart.CurrentAnimal?.SetDragable(cart == bottomCart);
@@ -151,9 +189,9 @@ public class FerrisWheel : MonoBehaviour
         animal.transform.position = unloadingLocation.position;
         animal.transform.rotation = Quaternion.identity;
 
-        // Animate animal moving to the right 10 units
-        Vector3 finalPosition = unloadingLocation.position + Vector3.right * 10f;
-        float moveRightDuration = 1.0f;
+        // Animate animal moving to the right 12 units
+        Vector3 finalPosition = unloadingLocation.position + Vector3.right * 12f;
+        float moveRightDuration = 2.0f;
         float elapsedTime = 0f;
 
         while (elapsedTime < moveRightDuration)
@@ -180,9 +218,5 @@ public class FerrisWheel : MonoBehaviour
         // Draw loading zone
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(loadingZone.center, loadingZone.size);
-
-        // Draw unloading zone
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(unloadingZone.center, unloadingZone.size);
     }
 }

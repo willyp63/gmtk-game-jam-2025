@@ -16,9 +16,9 @@ public class FloatingTextManager : Singleton<FloatingTextManager>
         1f
     );
 
-    public void SpawnText(string text, Vector3 position, Color color)
+    public void SpawnText(string text, Vector3 position, Color color, float fontSize = 1f)
     {
         FloatingText instance = Instantiate(floatingTextPrefab, canvas.transform);
-        instance.Initialize(text, position, color);
+        instance.Initialize(text, position, color, fontSize);
     }
 }

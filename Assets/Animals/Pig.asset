@@ -16,3 +16,10 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 2a4309393c8dbc845a59b62fd152d5a1, type: 3}
   loadingCost: 1
   basePoints: 1
+  effects:
+  - type: 0
+    trigger: 3
+    target: 0
+    value1: 0
+    value2: 2
+    value3: 0

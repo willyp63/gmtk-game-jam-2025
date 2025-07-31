@@ -41,3 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Cart UI
+    uniqueID: 1245818385
+    locked: 0
