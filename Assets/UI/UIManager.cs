@@ -77,12 +77,12 @@ public class UIManager : Singleton<UIManager>
     {
         if (pointsText != null)
         {
-            pointsText.text = $"{RoundManager.Instance.CurrentScore:N0} PTS";
+            pointsText.text = $"{RoundManager.Instance.CurrentScore:N0}";
         }
 
         if (requiredPointsText != null)
         {
-            requiredPointsText.text = $"{RoundManager.Instance.RequiredScore:N0} PTS";
+            requiredPointsText.text = $"{RoundManager.Instance.RequiredScore:N0}";
         }
     }
 

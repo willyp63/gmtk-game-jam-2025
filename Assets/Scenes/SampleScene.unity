@@ -820,8 +820,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 235, y: -145}
-  m_SizeDelta: {x: 400, y: 250}
+  m_AnchoredPosition: {x: 235, y: -170}
+  m_SizeDelta: {x: 400, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &276550939
 CanvasRenderer:
@@ -1238,6 +1238,9 @@ MonoBehaviour:
     modifier: 1
     count: 2
   - animalData: {fileID: 11400000, guid: 3b09b06b9c6e3f64ca48db478b84bd4c, type: 2}
+    modifier: 0
+    count: 2
+  - animalData: {fileID: 11400000, guid: befbdf94501bd124480b7f8c2e68f240, type: 2}
     modifier: 0
     count: 2
 --- !u!4 &585854835
@@ -4844,7 +4847,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 9000 PTS
+  m_text: 9000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a9f954376581694478295e01d32e2450, type: 2}
   m_sharedMaterial: {fileID: 7104344013488642166, guid: a9f954376581694478295e01d32e2450, type: 2}
@@ -5145,7 +5148,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 16,000 PTS
+  m_text: 16,000
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a9f954376581694478295e01d32e2450, type: 2}
   m_sharedMaterial: {fileID: 7104344013488642166, guid: a9f954376581694478295e01d32e2450, type: 2}

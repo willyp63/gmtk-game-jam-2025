@@ -64,16 +64,6 @@ public class AnimalData : ScriptableObject
         }
     }
 
-    public string GetTooltipText()
-    {
-        return $"<size=36>{animalName}</size>\n\n<size=28>{string.Join("\n", effects.Select(e => e.tooltipText))}</size>";
-    }
-
-    public string GetTooltipTextRight()
-    {
-        return $"<size=36><color=#{ColorUtility.ToHtmlStringRGBA(FloatingTextManager.pointsColor)}>{basePoints} PTS</color></size>";
-    }
-
     private static void ApplyPointsEffect(AnimalEffectData effect, Animal animal)
     {
         int newPoints = animal.CurrentPoints;

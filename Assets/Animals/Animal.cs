@@ -131,14 +131,14 @@ public class Animal : MonoBehaviour
         }
 
         // Set initial points
-        currentPoints = deckAnimal.BaseAnimalData.basePoints;
+        currentPoints = deckAnimal.ModifiedPoints;
 
         // Set tooltip text
         if (tooltipTrigger != null)
         {
             tooltipTrigger.SetTooltipText(
-                deckAnimal.BaseAnimalData.GetTooltipText(),
-                deckAnimal.BaseAnimalData.GetTooltipTextRight()
+                deckAnimal.GetTooltipText(),
+                deckAnimal.GetTooltipTextRight()
             );
         }
     }
@@ -157,7 +157,7 @@ public class Animal : MonoBehaviour
     {
         if (deckAnimal != null)
         {
-            currentPoints = deckAnimal.BaseAnimalData.basePoints;
+            currentPoints = deckAnimal.ModifiedPoints;
         }
         else
         {
