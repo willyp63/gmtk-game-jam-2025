@@ -22,4 +22,6 @@ MonoBehaviour:
     value1: 10
     value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON STOP:</color> <color=#B42FF7>+10 points</color>
+    tooltipText: <color=#00ffff>STOP:</color> <color=#B42FF7>#VAL# points</color>
+    tooltipTextOpposite: <color=#00ffff>STOP:</color> <color=#B42FF7>#VAL# points</color>
+      to opposite animal

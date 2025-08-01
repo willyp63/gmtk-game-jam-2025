@@ -22,4 +22,6 @@ MonoBehaviour:
     value1: 30
     value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON PASS TOP:</color> <color=#B42FF7>+30 points</color>
+    tooltipText: <color=#00ffff>PASS TOP:</color> <color=#B42FF7>#VAL# points</color>
+    tooltipTextOpposite: <color=#00ffff>PASS TOP:</color> <color=#B42FF7>#VAL# points</color>
+      to opposite animal

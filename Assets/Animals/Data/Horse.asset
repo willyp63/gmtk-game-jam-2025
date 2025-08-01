@@ -22,4 +22,6 @@ MonoBehaviour:
     value1: 5
     value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON ROTATE:</color> <color=#B42FF7>+5 points</color>
+    tooltipText: <color=#00ffff>ROTATE:</color> <color=#B42FF7>#VAL# points</color>
+    tooltipTextOpposite: <color=#00ffff>ROTATE:</color> <color=#B42FF7>#VAL# points</color>
+      to opposite animal

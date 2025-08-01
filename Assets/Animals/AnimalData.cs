@@ -46,6 +46,21 @@ public class AnimalEffectData
 
     [TextArea(3, 10)]
     public string tooltipText;
+
+    [TextArea(3, 10)]
+    public string tooltipTextOpposite;
+
+    public AnimalEffectData(AnimalEffectData other)
+    {
+        type = other.type;
+        trigger = other.trigger;
+        target = other.target;
+        value1 = other.value1;
+        value2 = other.value2;
+        value3 = other.value3;
+        tooltipText = other.tooltipText;
+        tooltipTextOpposite = other.tooltipTextOpposite;
+    }
 }
 
 [CreateAssetMenu(fileName = "New Animal", menuName = "Ferris Wheel/Animal")]

@@ -22,12 +22,15 @@ MonoBehaviour:
     value1: 10
     value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON ROTATE:</color> <color=#B42FF7>+10 points</color>
+    tooltipText: <color=#00ffff>ROTATE:</color> <color=#B42FF7>#VAL# points</color>
+    tooltipTextOpposite: <color=#00ffff>ROTATE:</color> <color=#B42FF7>#VAL# points</color>
+      to opposite animal
   - type: 0
     trigger: 2
     target: 1
     value1: -5
     value2: 0
     value3: 0
-    tooltipText: '<color=#00ffff>ON ROTATE: <color=#B42FF7>-5 points</color> to adjacent
-      animals'
+    tooltipText: <color=#00ffff>ROTATE:</color> <color=#B42FF7>#VAL# points</color>
+      to adjacent animals
+    tooltipTextOpposite: 

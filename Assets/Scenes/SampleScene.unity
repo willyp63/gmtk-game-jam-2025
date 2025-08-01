@@ -672,8 +672,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 235, y: -175}
-  m_SizeDelta: {x: 400, y: 310}
+  m_AnchoredPosition: {x: 245, y: -175}
+  m_SizeDelta: {x: 420, y: 310}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &276550939
 CanvasRenderer:
@@ -1188,34 +1188,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   testAnimals:
-  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: bee2020dc13ae1e4288f0115c5016013, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: 6ac8508a62c52b440915063fefcffa43, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: e13cbac7c70d1684c8a34216d11f0b0e, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
-    modifier: 0
-  - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
-    modifier: 0
   - animalData: {fileID: 11400000, guid: 5203c1219aab7f14c8ec252dfb6a0ef4, type: 2}
     modifier: 0
+  - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: 6ac8508a62c52b440915063fefcffa43, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: bee2020dc13ae1e4288f0115c5016013, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: e13cbac7c70d1684c8a34216d11f0b0e, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
+    modifier: 2
+  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    modifier: 2
   - animalData: {fileID: 11400000, guid: befbdf94501bd124480b7f8c2e68f240, type: 2}
-    modifier: 0
+    modifier: 2
   - animalData: {fileID: 11400000, guid: 43a06b0661ca2af41913f7473f589370, type: 2}
-    modifier: 0
+    modifier: 2
   - animalData: {fileID: 11400000, guid: 3b09b06b9c6e3f64ca48db478b84bd4c, type: 2}
-    modifier: 0
+    modifier: 2
   - animalData: {fileID: 11400000, guid: eed5aee37648db147ba907ebaab945c9, type: 2}
-    modifier: 0
+    modifier: 2
   animalOptions:
   - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}
     rarity: 0
-  - animalData: {fileID: 11400000, guid: 6ac8508a62c52b440915063fefcffa43, type: 2}
+  - animalData: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
     rarity: 0
   - animalData: {fileID: 11400000, guid: befbdf94501bd124480b7f8c2e68f240, type: 2}
     rarity: 0
@@ -1225,15 +1225,31 @@ MonoBehaviour:
     rarity: 0
   - animalData: {fileID: 11400000, guid: 5203c1219aab7f14c8ec252dfb6a0ef4, type: 2}
     rarity: 0
+  - animalData: {fileID: 11400000, guid: e13cbac7c70d1684c8a34216d11f0b0e, type: 2}
+    rarity: 1
+  - animalData: {fileID: 11400000, guid: 6ac8508a62c52b440915063fefcffa43, type: 2}
+    rarity: 1
+  - animalData: {fileID: 11400000, guid: 43a06b0661ca2af41913f7473f589370, type: 2}
+    rarity: 1
+  - animalData: {fileID: 11400000, guid: eed5aee37648db147ba907ebaab945c9, type: 2}
+    rarity: 1
+  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    rarity: 2
+  - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
+    rarity: 2
   modifierOptions:
   - modifier: 0
     weight: 1
-  - modifier: 2
-    weight: 0.5
   - modifier: 1
-    weight: 0.2
-  commonWeight: 3
-  uncommonWeight: 2
+    weight: 0.1
+  - modifier: 2
+    weight: 0.1
+  - modifier: 3
+    weight: 0.1
+  - modifier: 4
+    weight: 0.1
+  commonWeight: 5
+  uncommonWeight: 3
   rareWeight: 1
 --- !u!4 &585854835
 Transform:

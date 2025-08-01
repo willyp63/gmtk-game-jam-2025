@@ -27,7 +27,13 @@ public class Animal : MonoBehaviour
     private Material rainbowMaterial;
 
     [SerializeField]
+    private Material negativeMaterial;
+
+    [SerializeField]
     private Material fireMaterial;
+
+    [SerializeField]
+    private Material lightningMaterial;
 
     public System.Action<Vector3> OnDragToLoadingZone;
     public System.Action<Vector3> OnDragToSkipZone;
@@ -133,8 +139,14 @@ public class Animal : MonoBehaviour
                 case AnimalModifier.Rainbow:
                     spriteRenderer.material = rainbowMaterial;
                     break;
+                case AnimalModifier.Negative:
+                    spriteRenderer.material = negativeMaterial;
+                    break;
                 case AnimalModifier.Fire:
                     spriteRenderer.material = fireMaterial;
+                    break;
+                case AnimalModifier.Lightning:
+                    spriteRenderer.material = lightningMaterial;
                     break;
                 default:
                     spriteRenderer.material = defaultMaterial;

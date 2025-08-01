@@ -136,7 +136,9 @@ MonoBehaviour:
   tooltipTrigger: {fileID: 1642336771848041843}
   defaultMaterial: {fileID: 2100000, guid: a26c04ff5eaafda40861a3bd12028dc2, type: 2}
   rainbowMaterial: {fileID: 2100000, guid: b206cddf45e7a824aa498eed0516baf9, type: 2}
+  negativeMaterial: {fileID: 2100000, guid: 52ee52271ffcfa647977a254f21041c3, type: 2}
   fireMaterial: {fileID: 2100000, guid: e82c15917a6e04c49bffcb1f2afc04ed, type: 2}
+  lightningMaterial: {fileID: 2100000, guid: 1062d9a86ef361148bfb6f3925453c02, type: 2}
 --- !u!61 &6820127029956948431
 BoxCollider2D:
   m_ObjectHideFlags: 0

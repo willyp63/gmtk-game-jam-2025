@@ -22,5 +22,7 @@ MonoBehaviour:
     value1: 15
     value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON LOAD:</color> <color=#B42FF7>+15 points</color>
+    tooltipText: <color=#00ffff>LOAD:</color> <color=#B42FF7>#VAL# points</color>
       to adjacent animals
+    tooltipTextOpposite: <color=#00ffff>LOAD:</color> <color=#B42FF7>#VAL# points</color>
+      to opposite animal

@@ -56,13 +56,24 @@ public class DeckManager : Singleton<DeckManager>
 
     private void InitializeQueue()
     {
-        // First, add all test animals to the queue
-        foreach (var testAnimal in testAnimals)
+        AnimalModifier[] modifiers = new AnimalModifier[]
         {
-            if (testAnimal.animalData != null)
+            AnimalModifier.None,
+            AnimalModifier.Rainbow,
+            AnimalModifier.Negative,
+            AnimalModifier.Fire,
+            AnimalModifier.Lightning,
+        };
+
+        foreach (var modifier in modifiers)
+        {
+            foreach (var testAnimal in testAnimals)
             {
-                DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, testAnimal.modifier);
-                animalQueue.Enqueue(deckAnimal);
+                if (testAnimal.animalData != null)
+                {
+                    DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, modifier);
+                    animalQueue.Enqueue(deckAnimal);
+                }
             }
         }
 

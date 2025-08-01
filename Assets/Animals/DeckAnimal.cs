@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public enum AnimalModifier
 {
     None,
     Rainbow,
+    Negative,
     Fire,
+    Lightning,
 }
 
 public class DeckAnimal
@@ -29,7 +32,9 @@ public class DeckAnimal
         this.baseAnimalData = animalData;
         this.modifier = modifier;
         this.modifiedPoints = animalData.basePoints;
-        this.modifiedEffects = new List<AnimalEffectData>(animalData.effects);
+        this.modifiedEffects = new List<AnimalEffectData>(
+            animalData.effects.Select(e => new AnimalEffectData(e))
+        );
 
         ApplyModifierEffects();
     }
@@ -42,15 +47,38 @@ public class DeckAnimal
                 : $"{baseAnimalData.animalName}";
 
         string nameText =
-            $"<size=28>{FormatNameBasedOnModifier(modifier, nameWithModifier.ToUpper())}</size>";
+            $"<size=32>{FormatNameBasedOnModifier(modifier, nameWithModifier.ToUpper())}</size>";
 
         string pointsText =
             $"<size=28><color=#{ColorUtility.ToHtmlStringRGBA(FloatingTextManager.pointsColor)}>{modifiedPoints} points</color></size>";
 
         string effectsText =
-            $"<size=28>{string.Join("\n", modifiedEffects.Select(e => e.tooltipText).Where(e => e != ""))}</size>";
+            $"<size=28>{string.Join("\n", modifiedEffects.Select(e => FormatTooltipText(e.tooltipText, e)).Where(e => e != ""))}</size>";
 
         return $"{nameText}\n{pointsText}\n\n{effectsText}";
+    }
+
+    private string FormatTooltipText(string text, AnimalEffectData effect)
+    {
+        string pattern = @"#VAL#";
+
+        if (effect.type == AnimalEffectType.AddPoints)
+        {
+            string signText = effect.value1 > 0 ? "+" : "";
+            return Regex.Replace(text, pattern, $"{signText}{effect.value1}");
+        }
+        else if (effect.type == AnimalEffectType.MultiplyPoints)
+        {
+            return Regex.Replace(text, pattern, $"x{effect.value1}");
+        }
+        else if (effect.type == AnimalEffectType.SpinWheel)
+        {
+            return Regex.Replace(text, pattern, Mathf.Abs(effect.value1).ToString());
+        }
+        else
+        {
+            return Regex.Replace(text, pattern, effect.value1.ToString());
+        }
     }
 
     public string GetTooltipTextRight()
@@ -82,8 +110,12 @@ public class DeckAnimal
         {
             case AnimalModifier.Rainbow:
                 return "Rainbow";
+            case AnimalModifier.Negative:
+                return "Opposite";
             case AnimalModifier.Fire:
                 return "Fire";
+            case AnimalModifier.Lightning:
+                return "Hologram";
             default:
                 return "None";
         }
@@ -95,8 +127,12 @@ public class DeckAnimal
         {
             case AnimalModifier.Rainbow:
                 return FormatRainbowText(name);
+            case AnimalModifier.Negative:
+                return $"<color=#333333>{name}</color>";
             case AnimalModifier.Fire:
                 return $"<color=#FF4500>{name}</color>";
+            case AnimalModifier.Lightning:
+                return $"<color=#00FFFF>{name}</color>";
             default:
                 return name;
         }
@@ -132,27 +168,57 @@ public class DeckAnimal
             case AnimalModifier.Rainbow:
                 modifiedPoints *= 2;
                 break;
+            case AnimalModifier.Negative:
+                ApplyNegativeEffect();
+                break;
             case AnimalModifier.Fire:
                 ApplyFireEffect();
+                break;
+            case AnimalModifier.Lightning:
+                ApplyLightningEffect();
                 break;
             default:
                 break;
         }
     }
 
+    private void ApplyLightningEffect()
+    {
+        modifiedPoints = 0;
+        foreach (AnimalEffectData effect in modifiedEffects)
+        {
+            effect.trigger = AnimalEffectTrigger.OnRotate;
+
+            effect.tooltipText = Regex.Replace(
+                effect.tooltipText,
+                @"<color=#00ffff>(.*?)</color>",
+                "ROTATE:"
+            );
+        }
+    }
+
     private void ApplyFireEffect()
     {
-        AnimalEffectData fireEffect = new()
+        modifiedPoints = 0;
+        foreach (AnimalEffectData effect in modifiedEffects)
         {
-            type = AnimalEffectType.AddPoints,
-            trigger = AnimalEffectTrigger.OnRotate,
-            target = AnimalEffectTarget.Adjacent,
-            value1 = -5,
-            value2 = 0,
-            value3 = 0,
-            tooltipText = "<color=#00ffff>ON ROTATE:</color> -5 points to adjacent animals",
-        };
+            effect.value1 *= 2;
+        }
+    }
 
-        modifiedEffects.Add(fireEffect);
+    private void ApplyNegativeEffect()
+    {
+        if (modifiedEffects[0] != null)
+        {
+            modifiedEffects[0].tooltipText = modifiedEffects[0].tooltipTextOpposite;
+            if (modifiedEffects[0].type == AnimalEffectType.SpinWheel)
+            {
+                modifiedEffects[0].value1 *= -1;
+            }
+            else
+            {
+                modifiedEffects[0].target = AnimalEffectTarget.Opposite;
+            }
+        }
     }
 }
