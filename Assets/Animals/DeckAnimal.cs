@@ -21,25 +21,36 @@ public class DeckAnimal
     private int modifiedPoints;
     public int ModifiedPoints => modifiedPoints;
 
+    private List<AnimalEffectData> modifiedEffects;
+    public List<AnimalEffectData> ModifiedEffects => modifiedEffects;
+
     public DeckAnimal(AnimalData animalData, AnimalModifier modifier = AnimalModifier.None)
     {
         this.baseAnimalData = animalData;
         this.modifier = modifier;
-        this.modifiedPoints = animalData != null ? animalData.basePoints : 0;
+        this.modifiedPoints = animalData.basePoints;
+        this.modifiedEffects = new List<AnimalEffectData>(animalData.effects);
 
-        if (modifier == AnimalModifier.Rainbow)
-        {
-            modifiedPoints *= 2;
-        }
+        ApplyModifierEffects();
     }
 
     public string GetTooltipText()
     {
-        string animalName =
+        string nameWithModifier =
             modifier != AnimalModifier.None
                 ? $"{GetModifierName(modifier)} {baseAnimalData.animalName}"
                 : $"{baseAnimalData.animalName}";
-        return $"<size=28>{FormatNameBasedOnModifier(modifier, animalName.ToUpper())}</size>\n<size=28><color=#{ColorUtility.ToHtmlStringRGBA(FloatingTextManager.pointsColor)}>{modifiedPoints} points</color></size>\n\n<size=28>{string.Join("\n", baseAnimalData.effects.Select(e => e.tooltipText))}</size>";
+
+        string nameText =
+            $"<size=28>{FormatNameBasedOnModifier(modifier, nameWithModifier.ToUpper())}</size>";
+
+        string pointsText =
+            $"<size=28><color=#{ColorUtility.ToHtmlStringRGBA(FloatingTextManager.pointsColor)}>{modifiedPoints} points</color></size>";
+
+        string effectsText =
+            $"<size=28>{string.Join("\n", modifiedEffects.Select(e => e.tooltipText))}</size>";
+
+        return $"{nameText}\n{pointsText}\n\n{effectsText}";
     }
 
     public string GetTooltipTextRight()
@@ -112,5 +123,36 @@ public class DeckAnimal
         }
 
         return result;
+    }
+
+    private void ApplyModifierEffects()
+    {
+        switch (modifier)
+        {
+            case AnimalModifier.Rainbow:
+                modifiedPoints *= 2;
+                break;
+            case AnimalModifier.Fire:
+                ApplyFireEffect();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ApplyFireEffect()
+    {
+        AnimalEffectData fireEffect = new()
+        {
+            type = AnimalEffectType.Points,
+            trigger = AnimalEffectTrigger.OnRotate,
+            target = AnimalEffectTarget.Adjacent,
+            value1 = -5,
+            value2 = 1,
+            value3 = 0,
+            tooltipText = "<color=#00ffff>ON ROTATE:</color> -5 points to adjacent animals",
+        };
+
+        modifiedEffects.Add(fireEffect);
     }
 }

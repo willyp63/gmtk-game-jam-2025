@@ -100,9 +100,6 @@ public class RoundManager : Singleton<RoundManager>
 
     public void AddScore(int points)
     {
-        if (points <= 0)
-            return;
-
         currentScore += points;
         OnScoreChanged?.Invoke();
     }

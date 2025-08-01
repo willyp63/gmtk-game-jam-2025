@@ -57,7 +57,9 @@ public class Animal : MonoBehaviour
         if (deckAnimal == null)
             return;
 
-        foreach (AnimalEffectData effect in deckAnimal.BaseAnimalData.effects)
+        Debug.Log($"Applying effects for {trigger} on {deckAnimal.BaseAnimalData.animalName}");
+
+        foreach (AnimalEffectData effect in deckAnimal.ModifiedEffects)
         {
             if (effect.trigger == trigger)
             {
@@ -148,9 +150,14 @@ public class Animal : MonoBehaviour
         this.isDragable = isDragable;
     }
 
-    public void SetPoints(int newPoints)
+    public void AddPoints(int points)
     {
-        currentPoints = Mathf.Max(0, newPoints);
+        currentPoints += points;
+    }
+
+    public void MultiplyPoints(int multiplier)
+    {
+        currentPoints *= multiplier;
     }
 
     public void ResetPoints()

@@ -66,9 +66,11 @@ public class AnimalData : ScriptableObject
 
     private static void ApplyPointsEffect(AnimalEffectData effect, Animal animal)
     {
-        int newPoints = animal.CurrentPoints;
-        newPoints += (int)effect.value1;
-        newPoints *= (int)effect.value2;
-        animal.SetPoints(newPoints);
+        Debug.Log(
+            $"Applying points effect: +{effect.value1} & *{effect.value2} to animal {animal.DeckAnimal.BaseAnimalData.animalName}"
+        );
+
+        animal.AddPoints((int)effect.value1);
+        animal.MultiplyPoints((int)effect.value2);
     }
 }
