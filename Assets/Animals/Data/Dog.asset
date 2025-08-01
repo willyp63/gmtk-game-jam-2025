@@ -14,5 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Dog
   sprite: {fileID: 21300000, guid: a591c7a333e503c4c97acfa16946712f, type: 3}
-  basePoints: 35
-  effects: []
+  basePoints: 30
+  effects:
+  - type: 0
+    trigger: 7
+    target: 3
+    value1: 5
+    value2: 0
+    value3: 0
+    tooltipText: <color=#00ffff>ON PASS BOTTOM:</color> <color=#B42FF7>+5 points</color>
+      to all other animals

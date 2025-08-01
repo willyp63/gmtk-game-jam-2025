@@ -14,5 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Rabbit
   sprite: {fileID: 21300000, guid: c607ca210d347d84a9d150682f4b163a, type: 3}
-  basePoints: 35
-  effects: []
+  basePoints: 100
+  effects:
+  - type: 0
+    trigger: 3
+    target: 0
+    value1: -10
+    value2: 0
+    value3: 0
+    tooltipText: <color=#00ffff>ON STOP:</color> <color=#B42FF7>-10 points</color>

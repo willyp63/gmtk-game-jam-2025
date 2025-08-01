@@ -68,7 +68,7 @@ public class Animal : MonoBehaviour
                     .ToList();
                 foreach (Animal target in targets)
                 {
-                    AnimalData.ApplyEffect(effect, target);
+                    AnimalData.ApplyEffect(effect, target, this);
                 }
             }
         }
@@ -93,6 +93,16 @@ public class Animal : MonoBehaviour
                 };
             case AnimalEffectTarget.All:
                 return FerrisWheel.Instance.Carts.Select(cart => cart.CurrentAnimal).ToList();
+            case AnimalEffectTarget.Random:
+                List<Cart> otherFullCarts = FerrisWheel
+                    .Instance.Carts.Where(cart => !cart.IsEmpty && cart != AssignedCart)
+                    .OrderBy(cart => Random.value)
+                    .ToList();
+                if (otherFullCarts.Count > 0)
+                {
+                    return new List<Animal> { otherFullCarts[0].CurrentAnimal };
+                }
+                return new List<Animal>();
             default:
                 return new List<Animal>();
         }
@@ -148,6 +158,11 @@ public class Animal : MonoBehaviour
     public void SetDragable(bool isDragable)
     {
         this.isDragable = isDragable;
+    }
+
+    public void SetPoints(int points)
+    {
+        currentPoints = points;
     }
 
     public void AddPoints(int points)

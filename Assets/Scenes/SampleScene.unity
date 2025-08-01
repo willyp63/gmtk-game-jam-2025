@@ -1395,6 +1395,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bedb6e51492a6e469ee8396dbc401e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testAnimals:
+  - animalData: {fileID: 11400000, guid: 5203c1219aab7f14c8ec252dfb6a0ef4, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: 6ac8508a62c52b440915063fefcffa43, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: bee2020dc13ae1e4288f0115c5016013, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: e13cbac7c70d1684c8a34216d11f0b0e, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: befbdf94501bd124480b7f8c2e68f240, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: 43a06b0661ca2af41913f7473f589370, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: 3b09b06b9c6e3f64ca48db478b84bd4c, type: 2}
+    modifier: 0
+  - animalData: {fileID: 11400000, guid: eed5aee37648db147ba907ebaab945c9, type: 2}
+    modifier: 0
   animalOptions:
   - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}
     rarity: 0

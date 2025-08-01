@@ -16,10 +16,10 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: 2a4309393c8dbc845a59b62fd152d5a1, type: 3}
   basePoints: 20
   effects:
-  - type: 0
+  - type: 1
     trigger: 7
     target: 0
-    value1: 0
-    value2: 2
+    value1: 2
+    value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON LOOP:</color> <color=#B42FF7>x2 points</color>
+    tooltipText: <color=#00ffff>ON PASS BOTTOM:</color> <color=#B42FF7>x2 points</color>

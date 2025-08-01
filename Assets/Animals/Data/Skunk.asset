@@ -14,5 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Skunk
   sprite: {fileID: 21300000, guid: c14a05c293d72064fa30940af7efcdc6, type: 3}
-  basePoints: 35
-  effects: []
+  basePoints: 20
+  effects:
+  - type: 0
+    trigger: 2
+    target: 0
+    value1: 10
+    value2: 0
+    value3: 0
+    tooltipText: <color=#00ffff>ON ROTATE:</color> <color=#B42FF7>+10 points</color>
+  - type: 0
+    trigger: 2
+    target: 1
+    value1: -5
+    value2: 0
+    value3: 0
+    tooltipText: '<color=#00ffff>ON ROTATE: <color=#B42FF7>-5 points</color> to adjacent
+      animals'

@@ -19,8 +19,7 @@ MonoBehaviour:
   - type: 0
     trigger: 3
     target: 0
-    value1: 5
-    value2: 1
+    value1: 10
+    value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON STOP:</color> <color=#B42FF7>+5 points</color>
-      for each other animal
+    tooltipText: <color=#00ffff>ON STOP:</color> <color=#B42FF7>+10 points</color>

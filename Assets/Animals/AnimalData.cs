@@ -22,11 +22,15 @@ public enum AnimalEffectTarget
     Adjacent,
     Opposite,
     All,
+    Random,
 }
 
 public enum AnimalEffectType
 {
-    Points,
+    AddPoints,
+    MultiplyPoints,
+    CopyPoints,
+    SpinWheel,
 }
 
 [System.Serializable]
@@ -53,12 +57,21 @@ public class AnimalData : ScriptableObject
 
     public List<AnimalEffectData> effects;
 
-    public static void ApplyEffect(AnimalEffectData effect, Animal animal)
+    public static void ApplyEffect(AnimalEffectData effect, Animal animal, Animal source)
     {
         switch (effect.type)
         {
-            case AnimalEffectType.Points:
-                ApplyPointsEffect(effect, animal);
+            case AnimalEffectType.AddPoints:
+                animal.AddPoints((int)effect.value1);
+                break;
+            case AnimalEffectType.MultiplyPoints:
+                animal.MultiplyPoints((int)effect.value1);
+                break;
+            case AnimalEffectType.CopyPoints:
+                animal.SetPoints(source.CurrentPoints);
+                break;
+            case AnimalEffectType.SpinWheel:
+                FerrisWheel.Instance.RotateWheel(effect.value1 > 0, (int)Mathf.Abs(effect.value1));
                 break;
             default:
                 break;

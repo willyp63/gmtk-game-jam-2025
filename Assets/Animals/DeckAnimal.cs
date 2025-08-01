@@ -48,7 +48,7 @@ public class DeckAnimal
             $"<size=28><color=#{ColorUtility.ToHtmlStringRGBA(FloatingTextManager.pointsColor)}>{modifiedPoints} points</color></size>";
 
         string effectsText =
-            $"<size=28>{string.Join("\n", modifiedEffects.Select(e => e.tooltipText))}</size>";
+            $"<size=28>{string.Join("\n", modifiedEffects.Select(e => e.tooltipText).Where(e => e != ""))}</size>";
 
         return $"{nameText}\n{pointsText}\n\n{effectsText}";
     }
@@ -144,11 +144,11 @@ public class DeckAnimal
     {
         AnimalEffectData fireEffect = new()
         {
-            type = AnimalEffectType.Points,
+            type = AnimalEffectType.AddPoints,
             trigger = AnimalEffectTrigger.OnRotate,
             target = AnimalEffectTarget.Adjacent,
             value1 = -5,
-            value2 = 1,
+            value2 = 0,
             value3 = 0,
             tooltipText = "<color=#00ffff>ON ROTATE:</color> -5 points to adjacent animals",
         };

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Sheep
   sprite: {fileID: 21300000, guid: 8ffbc83dc7d13df4cbd1b0e0fb93d549, type: 3}
-  basePoints: 10
+  basePoints: 15
   effects:
   - type: 0
     trigger: 0
     target: 1
-    value1: 10
-    value2: 1
+    value1: 15
+    value2: 0
     value3: 0
-    tooltipText: <color=#00ffff>ON LOAD:</color> <color=#B42FF7>+10 points</color>
+    tooltipText: <color=#00ffff>ON LOAD:</color> <color=#B42FF7>+15 points</color>
       to adjacent animals

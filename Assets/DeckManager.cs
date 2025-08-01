@@ -10,6 +10,13 @@ public enum Rarity
 }
 
 [System.Serializable]
+public class TestAnimal
+{
+    public AnimalData animalData;
+    public AnimalModifier modifier;
+}
+
+[System.Serializable]
 public class AnimalOption
 {
     public AnimalData animalData;
@@ -26,6 +33,9 @@ public class ModifierOption
 public class DeckManager : Singleton<DeckManager>
 {
     [SerializeField]
+    private List<TestAnimal> testAnimals = new();
+
+    [SerializeField]
     private List<AnimalOption> animalOptions = new();
 
     [SerializeField]
@@ -40,24 +50,68 @@ public class DeckManager : Singleton<DeckManager>
     [SerializeField]
     private float rareWeight = 1;
 
+    // Queue to store animals in order of priority
+    private Queue<DeckAnimal> animalQueue = new Queue<DeckAnimal>();
+    private bool isInitialized = false;
+
+    private void InitializeQueue()
+    {
+        // First, add all test animals to the queue
+        foreach (var testAnimal in testAnimals)
+        {
+            if (testAnimal.animalData != null)
+            {
+                DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, testAnimal.modifier);
+                animalQueue.Enqueue(deckAnimal);
+            }
+        }
+
+        isInitialized = true;
+    }
+
     public List<DeckAnimal> DequeueAnimals(int count)
     {
+        if (!isInitialized)
+            InitializeQueue();
+
         List<DeckAnimal> result = new List<DeckAnimal>();
 
         for (int i = 0; i < count; i++)
         {
-            // Select random animal data based on rarity weights
-            AnimalData selectedAnimalData = GetRandomAnimalData();
-
-            // Select random modifier based on rarity weights (with chance of no modifier)
-            AnimalModifier selectedModifier = GetRandomModifier();
-
-            // Create DeckAnimal with selected data and modifier
-            DeckAnimal newAnimal = new DeckAnimal(selectedAnimalData, selectedModifier);
-            result.Add(newAnimal);
+            // If queue is empty, generate a random animal
+            if (animalQueue.Count == 0)
+            {
+                DeckAnimal randomAnimal = GenerateRandomAnimal();
+                if (randomAnimal != null)
+                {
+                    result.Add(randomAnimal);
+                }
+            }
+            else
+            {
+                // Dequeue the next animal from the queue
+                result.Add(animalQueue.Dequeue());
+            }
         }
 
         return result;
+    }
+
+    private DeckAnimal GenerateRandomAnimal()
+    {
+        // Select random animal data based on rarity weights
+        AnimalData selectedAnimalData = GetRandomAnimalData();
+
+        if (selectedAnimalData == null)
+        {
+            return null;
+        }
+
+        // Select random modifier based on rarity weights (with chance of no modifier)
+        AnimalModifier selectedModifier = GetRandomModifier();
+
+        // Create DeckAnimal with selected data and modifier
+        return new DeckAnimal(selectedAnimalData, selectedModifier);
     }
 
     private AnimalData GetRandomAnimalData()
