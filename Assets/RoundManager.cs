@@ -12,10 +12,13 @@ public class RoundManager : Singleton<RoundManager>
     private int requiredScoreIncreasePerRound = 10;
 
     [SerializeField]
-    private int energyPerDay = 30;
+    private int energyPerDay = 16;
 
     [SerializeField]
-    private int skipsPerRound = 3;
+    private int energyIncreasePerRound = 2;
+
+    [SerializeField]
+    private int skipsPerRound = 2;
 
     // Current state
     private int currentRound = 0;
@@ -87,7 +90,7 @@ public class RoundManager : Singleton<RoundManager>
     private void ResetRound()
     {
         currentScore = 0;
-        currentEnergy = energyPerDay;
+        currentEnergy = energyPerDay + ((currentRound - 1) * energyIncreasePerRound);
         currentSkipsUsed = 0;
 
         OnScoreChanged?.Invoke();

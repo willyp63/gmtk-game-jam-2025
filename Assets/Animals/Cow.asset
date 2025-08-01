@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60f298366bf03ce4ab98fb0963dd7c6c, type: 3}
-  m_Name: Pig
+  m_Name: Cow
   m_EditorClassIdentifier: 
-  animalName: Pig
-  sprite: {fileID: 21300000, guid: 2a4309393c8dbc845a59b62fd152d5a1, type: 3}
-  basePoints: 20
+  animalName: Cow
+  sprite: {fileID: 21300000, guid: 9aa9f648e4d99194f9cc5eaa0db071ed, type: 3}
+  basePoints: 10
   effects:
   - type: 0
-    trigger: 7
-    target: 0
-    value1: 0
-    value2: 2
+    trigger: 4
+    target: 3
+    value1: 5
+    value2: 1
     value3: 0
-    tooltipText: <color=#00ffff>ON LOOP:</color> <color=#B42FF7>x2 points</color>
+    tooltipText: <color=#00ffff>ON STOP TOP:</color> <color=#B42FF7>+5 points</color>
+      to all animals

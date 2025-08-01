@@ -52,8 +52,9 @@ public class Animal : MonoBehaviour
         {
             if (effect.trigger == trigger)
             {
-                Debug.Log($"Applying effect {effect.type} to {this.animalData.animalName}");
-                List<Animal> targets = GetEffectTargets(effect);
+                List<Animal> targets = GetEffectTargets(effect)
+                    .Where(animal => animal != null)
+                    .ToList();
                 foreach (Animal target in targets)
                 {
                     AnimalData.ApplyEffect(effect, target);
@@ -71,8 +72,8 @@ public class Animal : MonoBehaviour
             case AnimalEffectTarget.Adjacent:
                 return new List<Animal>
                 {
-                    FerrisWheel.Instance.GetAdjacentCart(true).CurrentAnimal,
-                    FerrisWheel.Instance.GetAdjacentCart(false).CurrentAnimal,
+                    FerrisWheel.Instance.GetAdjacentCart(AssignedCart, true).CurrentAnimal,
+                    FerrisWheel.Instance.GetAdjacentCart(AssignedCart, false).CurrentAnimal,
                 };
             case AnimalEffectTarget.Opposite:
                 return new List<Animal>
@@ -80,10 +81,7 @@ public class Animal : MonoBehaviour
                     FerrisWheel.Instance.GetOppositeCart(AssignedCart).CurrentAnimal,
                 };
             case AnimalEffectTarget.All:
-                return FerrisWheel
-                    .Instance.Carts.Select(cart => cart.CurrentAnimal)
-                    .Where(animal => animal != null)
-                    .ToList();
+                return FerrisWheel.Instance.Carts.Select(cart => cart.CurrentAnimal).ToList();
             default:
                 return new List<Animal>();
         }

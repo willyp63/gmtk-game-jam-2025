@@ -54,9 +54,10 @@ public class FerrisWheel : Singleton<FerrisWheel>
         return carts[topCartIndex];
     }
 
-    public Cart GetAdjacentCart(bool isClockwise)
+    public Cart GetAdjacentCart(Cart cart, bool isClockwise)
     {
-        int index = (topCartIndex + (isClockwise ? 1 : -1) + carts.Count) % carts.Count;
+        int cartIndex = carts.IndexOf(cart);
+        int index = (cartIndex + (isClockwise ? 1 : -1) + carts.Count) % carts.Count;
         return carts[index];
     }
 

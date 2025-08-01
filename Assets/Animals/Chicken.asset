@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Chicken
   sprite: {fileID: 21300000, guid: 88e265f924bfac341acd8a0d1aabbad9, type: 3}
-  basePoints: 5
+  basePoints: 10
   effects:
   - type: 0
     trigger: 3
