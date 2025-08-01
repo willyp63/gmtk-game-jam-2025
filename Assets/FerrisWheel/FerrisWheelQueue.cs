@@ -17,7 +17,10 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
     private List<Animal> queueAnimals = new();
 
     // Dictionary to store event handlers for each animal
-    private Dictionary<Animal, System.Action> animalEventHandlers = new();
+    private Dictionary<Animal, System.Action<Vector3>> animalEventHandlers = new();
+
+    // Dictionary to store skip zone event handlers for each animal
+    private Dictionary<Animal, System.Action<Vector3>> animalSkipEventHandlers = new();
 
     // Events
     public System.Action OnQueueChanged;
@@ -110,8 +113,8 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         newAnimal.transform.localPosition = Vector3.zero;
         newAnimal.InitializeAnimal(animalData);
 
-        // Create event handler and store it
-        System.Action eventHandler = () =>
+        // Create loading zone event handler and store it
+        System.Action<Vector3> loadingEventHandler = (Vector3 position) =>
         {
             if (FerrisWheel.Instance.CanLoadAnimal())
             {
@@ -120,11 +123,19 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
             }
         };
 
-        // Subscribe to the event
-        newAnimal.OnDragToLoadingZone += eventHandler;
+        // Create skip zone event handler and store it
+        System.Action<Vector3> skipEventHandler = (Vector3 position) =>
+        {
+            SkipAnimal(newAnimal, position);
+        };
 
-        // Store the event handler for later unsubscription
-        animalEventHandlers[newAnimal] = eventHandler;
+        // Subscribe to the events
+        newAnimal.OnDragToLoadingZone += loadingEventHandler;
+        newAnimal.OnDragToSkipZone += skipEventHandler;
+
+        // Store the event handlers for later unsubscription
+        animalEventHandlers[newAnimal] = loadingEventHandler;
+        animalSkipEventHandlers[newAnimal] = skipEventHandler;
 
         // Add to queue list
         queueAnimals.Add(newAnimal);
@@ -139,11 +150,17 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         if (animalIndex == -1)
             return;
 
-        // Unsubscribe from the event
+        // Unsubscribe from the events
         if (animalEventHandlers.ContainsKey(animal))
         {
             animal.OnDragToLoadingZone -= animalEventHandlers[animal];
             animalEventHandlers.Remove(animal);
+        }
+
+        if (animalSkipEventHandlers.ContainsKey(animal))
+        {
+            animal.OnDragToSkipZone -= animalSkipEventHandlers[animal];
+            animalSkipEventHandlers.Remove(animal);
         }
 
         // Remove from queue
@@ -151,6 +168,100 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
 
         // Shift remaining animals forward
         StartCoroutine(AnimateShiftAnimalsForward(animalIndex));
+    }
+
+    public void SkipAnimal(Animal animal, Vector3 dragToPosition)
+    {
+        // Find the animal in our queue
+        int animalIndex = queueAnimals.IndexOf(animal);
+        if (animalIndex == -1)
+            return;
+
+        // Consume a skip
+        if (!RoundManager.Instance.ConsumeSkip())
+        {
+            return;
+        }
+
+        // Unsubscribe from the events
+        if (animalEventHandlers.ContainsKey(animal))
+        {
+            animal.OnDragToLoadingZone -= animalEventHandlers[animal];
+            animalEventHandlers.Remove(animal);
+        }
+
+        if (animalSkipEventHandlers.ContainsKey(animal))
+        {
+            animal.OnDragToSkipZone -= animalSkipEventHandlers[animal];
+            animalSkipEventHandlers.Remove(animal);
+        }
+
+        // Remove from queue
+        queueAnimals.RemoveAt(animalIndex);
+
+        // Add back to deck queue
+        DeckManager.Instance.EnqueueAnimal(animal.AnimalData);
+
+        animal.transform.position = new Vector3(
+            dragToPosition.x,
+            FerrisWheel.Instance.UnloadingLocation.position.y,
+            0f
+        );
+
+        // Animate the skipped animal off screen
+        StartCoroutine(AnimateSkippedAnimal(animal));
+
+        // Shift remaining animals forward
+        StartCoroutine(AnimateShiftAnimalsForward(animalIndex));
+    }
+
+    private IEnumerator AnimateSkippedAnimal(Animal animal)
+    {
+        if (animal == null || FerrisWheel.Instance.UnloadingLocation == null)
+        {
+            Destroy(animal?.gameObject);
+            yield break;
+        }
+
+        animal.SetIsMoving(true);
+
+        Vector3 targetPosition = animal.transform.position + Vector3.right * 12f;
+
+        // Animate animal to the target position
+        float moveToPositionDuration = 1.0f;
+        float elapsedTime = 0f;
+        Vector3 startPosition = animal.transform.position;
+
+        while (elapsedTime < moveToPositionDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / moveToPositionDuration;
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            animal.transform.position = Vector3.Lerp(startPosition, targetPosition, easedT);
+            yield return null;
+        }
+
+        // Ensure animal is exactly at target position
+        animal.transform.position = targetPosition;
+
+        // Animate animal moving to the right 12 units (same as unloading)
+        Vector3 finalPosition = targetPosition + Vector3.right * 12f;
+        float moveRightDuration = 2.0f;
+        elapsedTime = 0f;
+
+        while (elapsedTime < moveRightDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / moveRightDuration;
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            animal.transform.position = Vector3.Lerp(targetPosition, finalPosition, easedT);
+            yield return null;
+        }
+
+        // Destroy the animal
+        Destroy(animal.gameObject);
     }
 
     private IEnumerator AnimateShiftAnimalsForward(int startIndex)
@@ -237,10 +348,15 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
             {
                 animal.OnDragToLoadingZone -= animalEventHandlers[animal];
             }
+            if (animal != null && animalSkipEventHandlers.ContainsKey(animal))
+            {
+                animal.OnDragToSkipZone -= animalSkipEventHandlers[animal];
+            }
         }
 
         // Clear the event handlers dictionary
         animalEventHandlers.Clear();
+        animalSkipEventHandlers.Clear();
 
         // Destroy the animals
         foreach (Animal animal in queueAnimals)

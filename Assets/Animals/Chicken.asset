@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Chicken
   sprite: {fileID: 21300000, guid: 88e265f924bfac341acd8a0d1aabbad9, type: 3}
-  basePoints: 10
+  basePoints: 5
   effects:
   - type: 0
     trigger: 3
@@ -22,5 +22,4 @@ MonoBehaviour:
     value1: 5
     value2: 1
     value3: 0
-    tooltipText: <color=#00ffff>STOP:</color> All animals gain <color=#B42FF7>+5
-      points</color>
+    tooltipText: <color=#00ffff>ON STOP:</color> <color=#B42FF7>+5 points</color>

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Pig
   sprite: {fileID: 21300000, guid: 2a4309393c8dbc845a59b62fd152d5a1, type: 3}
-  basePoints: 10
+  basePoints: 15
   effects:
   - type: 0
     trigger: 7
@@ -22,5 +22,4 @@ MonoBehaviour:
     value1: 0
     value2: 2
     value3: 0
-    tooltipText: <color=#00ffff>LOOP:</color> Give opposite animal <color=#B42FF7>x2
-      points</color>
+    tooltipText: <color=#00ffff>ON LOOP:</color> <color=#B42FF7>x2 points</color>

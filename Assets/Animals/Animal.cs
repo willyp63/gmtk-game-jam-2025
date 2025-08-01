@@ -20,7 +20,8 @@ public class Animal : MonoBehaviour
     [SerializeField]
     private TooltipTrigger tooltipTrigger;
 
-    public System.Action OnDragToLoadingZone;
+    public System.Action<Vector3> OnDragToLoadingZone;
+    public System.Action<Vector3> OnDragToSkipZone;
 
     // Drag and drop variables
     private bool isDragable = true;
@@ -206,7 +207,11 @@ public class Animal : MonoBehaviour
         // Check loading zone
         if (FerrisWheel.Instance.LoadingZone.Contains(dragToPosition))
         {
-            OnDragToLoadingZone?.Invoke();
+            OnDragToLoadingZone?.Invoke(dragToPosition);
+        }
+        else if (FerrisWheel.Instance.SkipZone.Contains(dragToPosition))
+        {
+            OnDragToSkipZone?.Invoke(dragToPosition);
         }
     }
 }

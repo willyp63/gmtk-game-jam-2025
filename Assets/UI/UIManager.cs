@@ -19,6 +19,9 @@ public class UIManager : Singleton<UIManager>
     private TextMeshProUGUI energyText;
 
     [SerializeField]
+    private TextMeshProUGUI skipsText;
+
+    [SerializeField]
     private List<Button> rotateButtons;
 
     [SerializeField]
@@ -49,6 +52,7 @@ public class UIManager : Singleton<UIManager>
         {
             RoundManager.Instance.OnScoreChanged += UpdateScoreDisplay;
             RoundManager.Instance.OnEnergyChanged += UpdateEnergyDisplay;
+            RoundManager.Instance.OnSkipsChanged += UpdateSkipsDisplay;
             RoundManager.Instance.OnRoundStarted += UpdateRoundDisplay;
         }
     }
@@ -58,13 +62,14 @@ public class UIManager : Singleton<UIManager>
         UpdateRoundDisplay();
         UpdateScoreDisplay();
         UpdateEnergyDisplay();
+        UpdateSkipsDisplay();
     }
 
     private void UpdateRoundDisplay()
     {
         if (roundText != null)
         {
-            roundText.text = $"Round {RoundManager.Instance.CurrentRound}";
+            roundText.text = $"DAY {RoundManager.Instance.CurrentRound}";
         }
     }
 
@@ -86,6 +91,14 @@ public class UIManager : Singleton<UIManager>
         if (energyText != null)
         {
             energyText.text = $"{RoundManager.Instance.CurrentEnergy}";
+        }
+    }
+
+    private void UpdateSkipsDisplay()
+    {
+        if (skipsText != null)
+        {
+            skipsText.text = $"{RoundManager.Instance.SkipsRemaining}";
         }
     }
 

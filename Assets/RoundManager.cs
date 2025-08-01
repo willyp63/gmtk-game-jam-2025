@@ -14,15 +14,20 @@ public class RoundManager : Singleton<RoundManager>
     [SerializeField]
     private int energyPerDay = 30;
 
+    [SerializeField]
+    private int skipsPerRound = 3;
+
     // Current state
     private int currentRound = 0;
     private int currentEnergy = 0;
     private int currentScore = 0;
     private int requiredScore = 0;
+    private int currentSkipsUsed = 0;
 
     // Events
     public event Action OnScoreChanged;
     public event Action OnEnergyChanged;
+    public event Action OnSkipsChanged;
     public event Action OnRoundCompleted;
     public event Action OnRoundFailed;
     public event Action OnRoundStarted;
@@ -33,7 +38,11 @@ public class RoundManager : Singleton<RoundManager>
     public int CurrentScore => currentScore;
     public int RequiredScore => requiredScore;
     public int EnergyPerDay => energyPerDay;
+    public int SkipsPerRound => skipsPerRound;
+    public int CurrentSkipsUsed => currentSkipsUsed;
+    public int SkipsRemaining => skipsPerRound - currentSkipsUsed;
     public bool IsRoundComplete => currentScore >= requiredScore;
+    public bool CanSkip => currentSkipsUsed < skipsPerRound;
 
     private void Start()
     {
@@ -79,9 +88,11 @@ public class RoundManager : Singleton<RoundManager>
     {
         currentScore = 0;
         currentEnergy = energyPerDay;
+        currentSkipsUsed = 0;
 
         OnScoreChanged?.Invoke();
         OnEnergyChanged?.Invoke();
+        OnSkipsChanged?.Invoke();
     }
 
     public void AddScore(int points)
@@ -102,6 +113,17 @@ public class RoundManager : Singleton<RoundManager>
 
         currentEnergy -= amount;
         OnEnergyChanged?.Invoke();
+
+        return true;
+    }
+
+    public bool ConsumeSkip()
+    {
+        if (!CanSkip)
+            return false;
+
+        currentSkipsUsed++;
+        OnSkipsChanged?.Invoke();
 
         return true;
     }

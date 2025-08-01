@@ -9,6 +9,10 @@ public class FerrisWheel : Singleton<FerrisWheel>
     public List<Cart> Carts => carts;
 
     [SerializeField]
+    private Bounds skipZone;
+    public Bounds SkipZone => skipZone;
+
+    [SerializeField]
     private Bounds loadingZone;
     public Bounds LoadingZone => loadingZone;
 
@@ -225,6 +229,10 @@ public class FerrisWheel : Singleton<FerrisWheel>
         // Draw loading zone
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(loadingZone.center, loadingZone.size);
+
+        // Draw skip zone
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(skipZone.center, skipZone.size);
     }
 
     public void ClearWheel()
