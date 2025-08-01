@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60f298366bf03ce4ab98fb0963dd7c6c, type: 3}
+  m_Name: Octopus
+  m_EditorClassIdentifier: 
+  animalName: Octopus
+  sprite: {fileID: 21300000, guid: b568c7b104f884049b4b5df2f0ec6580, type: 3}
+  basePoints: 35
+  effects: []

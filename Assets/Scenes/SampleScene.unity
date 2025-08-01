@@ -1404,6 +1404,10 @@ MonoBehaviour:
     rarity: 0
   - animalData: {fileID: 11400000, guid: 3b09b06b9c6e3f64ca48db478b84bd4c, type: 2}
     rarity: 0
+  - animalData: {fileID: 11400000, guid: bee2020dc13ae1e4288f0115c5016013, type: 2}
+    rarity: 0
+  - animalData: {fileID: 11400000, guid: 5203c1219aab7f14c8ec252dfb6a0ef4, type: 2}
+    rarity: 0
   modifierOptions:
   - modifier: 0
     weight: 1
