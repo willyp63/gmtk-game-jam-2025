@@ -10,8 +10,6 @@ public class GameManager : Singleton<GameManager>
         RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
         RoundManager.Instance.OnRoundFailed += OnRoundFailed;
 
-        DeckManager.Instance.InitializeDeck();
-        DeckManager.Instance.RegenerateQueue();
         FerrisWheelQueue.Instance.GenerateQueue();
 
         RoundManager.Instance.StartFirstRound();
@@ -42,8 +40,6 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(2f);
 
-        FerrisWheel.Instance.ClearWheel();
-        DeckManager.Instance.RegenerateQueue();
         FerrisWheelQueue.Instance.GenerateQueue();
         RoundManager.Instance.AdvanceToNextRound();
     }
@@ -65,8 +61,6 @@ public class GameManager : Singleton<GameManager>
         FerrisWheel.Instance.ClearWheel();
 
         // Reinitialize everything
-        DeckManager.Instance.InitializeDeck();
-        DeckManager.Instance.RegenerateQueue();
         FerrisWheelQueue.Instance.GenerateQueue();
 
         // Start back at round 1

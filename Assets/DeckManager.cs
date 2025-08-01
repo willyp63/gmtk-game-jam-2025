@@ -1,120 +1,149 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
+public enum Rarity
+{
+    Common,
+    Uncommon,
+    Rare,
+}
+
 [System.Serializable]
-public class InitalDeckAnimal
+public class AnimalOption
 {
     public AnimalData animalData;
+    public Rarity rarity;
+}
+
+[System.Serializable]
+public class ModifierOption
+{
     public AnimalModifier modifier;
-    public int count;
+    public float weight;
 }
 
 public class DeckManager : Singleton<DeckManager>
 {
     [SerializeField]
-    private List<InitalDeckAnimal> initialDeck = new();
+    private List<AnimalOption> animalOptions = new();
 
-    // Player's full deck of animals
-    private List<DeckAnimal> playerDeck = new();
+    [SerializeField]
+    private List<ModifierOption> modifierOptions = new();
 
-    // Daily queue of animals (shuffled from deck)
-    private Queue<DeckAnimal> animalQueue = new();
+    [SerializeField]
+    private float commonWeight = 4;
 
-    // Events
-    public System.Action OnDeckChanged;
-    public System.Action OnQueueRegenerated;
+    [SerializeField]
+    private float uncommonWeight = 2;
 
-    public void InitializeDeck()
-    {
-        playerDeck.Clear();
-
-        foreach (InitalDeckAnimal initialDeckAnimal in initialDeck)
-        {
-            for (int i = 0; i < initialDeckAnimal.count; i++)
-            {
-                DeckAnimal deckAnimal = new DeckAnimal(
-                    initialDeckAnimal.animalData,
-                    initialDeckAnimal.modifier
-                );
-                playerDeck.Add(deckAnimal);
-            }
-        }
-
-        OnDeckChanged?.Invoke();
-    }
-
-    public void RegenerateQueue()
-    {
-        animalQueue.Clear();
-
-        // Create a shuffled list from the deck
-        List<DeckAnimal> shuffledDeck = new List<DeckAnimal>(playerDeck);
-        ShuffleList(shuffledDeck);
-
-        // Fill the queue up
-        for (int i = 0; i < shuffledDeck.Count; i++)
-        {
-            animalQueue.Enqueue(shuffledDeck[i]);
-        }
-
-        OnQueueRegenerated?.Invoke();
-    }
+    [SerializeField]
+    private float rareWeight = 1;
 
     public List<DeckAnimal> DequeueAnimals(int count)
     {
         List<DeckAnimal> result = new List<DeckAnimal>();
 
-        for (int i = 0; i < count && animalQueue.Count > 0; i++)
+        for (int i = 0; i < count; i++)
         {
-            result.Add(animalQueue.Dequeue());
+            // Select random animal data based on rarity weights
+            AnimalData selectedAnimalData = GetRandomAnimalData();
+
+            // Select random modifier based on rarity weights (with chance of no modifier)
+            AnimalModifier selectedModifier = GetRandomModifier();
+
+            // Create DeckAnimal with selected data and modifier
+            DeckAnimal newAnimal = new DeckAnimal(selectedAnimalData, selectedModifier);
+            result.Add(newAnimal);
         }
 
         return result;
     }
 
-    public void EnqueueAnimal(DeckAnimal animal)
+    private AnimalData GetRandomAnimalData()
     {
-        animalQueue.Enqueue(animal);
-    }
-
-    public void AddAnimalToDeck(DeckAnimal animal)
-    {
-        playerDeck.Add(animal);
-        OnDeckChanged?.Invoke();
-    }
-
-    public void AddAnimalDataToDeck(
-        AnimalData animalData,
-        AnimalModifier modifier = AnimalModifier.Rainbow
-    )
-    {
-        DeckAnimal deckAnimal = new DeckAnimal(animalData, modifier);
-        playerDeck.Add(deckAnimal);
-        OnDeckChanged?.Invoke();
-    }
-
-    private void ShuffleList<T>(List<T> list)
-    {
-        for (int i = list.Count - 1; i > 0; i--)
+        if (animalOptions.Count == 0)
         {
-            int randomIndex = Random.Range(0, i + 1);
-            T temp = list[i];
-            list[i] = list[randomIndex];
-            list[randomIndex] = temp;
+            Debug.LogWarning("No animal options available!");
+            return null;
+        }
+
+        // Calculate total weight
+        float totalWeight = 0f;
+        foreach (var option in animalOptions)
+        {
+            totalWeight += GetWeightForRarity(option.rarity);
+        }
+
+        if (totalWeight <= 0f)
+        {
+            Debug.LogWarning("Total weight is 0 or negative!");
+            return null;
+        }
+
+        // Generate random value
+        float randomValue = Random.Range(0f, totalWeight);
+        float currentWeight = 0f;
+
+        // Find the option that corresponds to the random value
+        foreach (var option in animalOptions)
+        {
+            currentWeight += GetWeightForRarity(option.rarity);
+            if (randomValue < currentWeight)
+            {
+                return option.animalData;
+            }
+        }
+
+        // Fallback (shouldn't reach here if weights are positive)
+        return animalOptions[animalOptions.Count - 1].animalData;
+    }
+
+    private AnimalModifier GetRandomModifier()
+    {
+        // Calculate total weight
+        float totalWeight = 0f;
+
+        foreach (var option in modifierOptions)
+        {
+            totalWeight += option.weight;
+        }
+
+        if (totalWeight <= 0f)
+        {
+            return AnimalModifier.None;
+        }
+
+        // Generate random value
+        float randomValue = Random.Range(0f, totalWeight);
+        float currentWeight = 0f;
+
+        // Check modifier options first
+        foreach (var option in modifierOptions)
+        {
+            currentWeight += option.weight;
+            if (randomValue < currentWeight)
+            {
+                return option.modifier;
+            }
+        }
+
+        // If we haven't selected a modifier yet, return "None"
+        return AnimalModifier.None;
+    }
+
+    private float GetWeightForRarity(Rarity rarity)
+    {
+        switch (rarity)
+        {
+            case Rarity.Common:
+                return commonWeight;
+            case Rarity.Uncommon:
+                return uncommonWeight;
+            case Rarity.Rare:
+                return rareWeight;
+            default:
+                return 1f;
         }
     }
-
-    public List<DeckAnimal> GetPlayerDeck() => new List<DeckAnimal>(playerDeck);
-
-    public Queue<DeckAnimal> GetAnimalQueue() => new Queue<DeckAnimal>(animalQueue);
-
-    public int GetQueueSize() => animalQueue.Count;
-
-    public int GetDeckSize() => playerDeck.Count;
-
-    public bool IsQueueEmpty() => animalQueue.Count == 0;
-
-    public bool IsDeckEmpty() => playerDeck.Count == 0;
 }

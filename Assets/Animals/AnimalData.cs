@@ -13,6 +13,7 @@ public enum AnimalEffectTrigger
     OnStopBottom,
     OnPassTop,
     OnPassBottom,
+    OnDayEnd,
 }
 
 public enum AnimalEffectTarget

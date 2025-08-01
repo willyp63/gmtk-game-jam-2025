@@ -199,9 +199,6 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         // Remove from queue
         queueAnimals.RemoveAt(animalIndex);
 
-        // Add back to the queue
-        DeckManager.Instance.EnqueueAnimal(animal.DeckAnimal);
-
         animal.transform.position = new Vector3(
             dragToPosition.x,
             FerrisWheel.Instance.UnloadingLocation.position.y,
@@ -269,14 +266,11 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         float animationDuration = 0.5f; // Quick animation duration
         float elapsedTime = 0f;
 
-        // Create new animal off-screen first if we have animals left in deck
-        if (!DeckManager.Instance.IsQueueEmpty())
+        // Create new animal off-screen first
+        List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(1);
+        if (newDeckAnimal.Count > 0)
         {
-            List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(1);
-            if (newDeckAnimal.Count > 0)
-            {
-                CreateAnimalInQueue(newDeckAnimal[0], animalPositions.Count);
-            }
+            CreateAnimalInQueue(newDeckAnimal[0], animalPositions.Count);
         }
 
         // Store starting positions for each animal that needs to move (including new animal)

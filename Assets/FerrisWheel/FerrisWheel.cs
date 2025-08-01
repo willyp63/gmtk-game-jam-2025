@@ -165,7 +165,7 @@ public class FerrisWheel : Singleton<FerrisWheel>
             RoundManager.Instance.AddScore(animal.CurrentPoints);
 
             FloatingTextManager.Instance.SpawnText(
-                $"+{animal.CurrentPoints}",
+                animal.CurrentPoints > 0 ? $"+{animal.CurrentPoints}" : $"{animal.CurrentPoints}",
                 animal.transform.position,
                 FloatingTextManager.pointsColor,
                 1.5f
@@ -175,8 +175,45 @@ public class FerrisWheel : Singleton<FerrisWheel>
             StartCoroutine(AnimateAnimalUnloading(animal));
         }
 
+        // If the round is over, apply the OnDayEnd effect to all animals and subtract points
+        if (RoundManager.Instance.CurrentEnergy <= 0)
+        {
+            SubtractPointsFromAnimals();
+        }
+
         isRotating = false;
         OnWheelStopped?.Invoke();
+    }
+
+    public void EndDayEarly()
+    {
+        RoundManager.Instance.ConsumeEnergy(RoundManager.Instance.CurrentEnergy);
+
+        SubtractPointsFromAnimals();
+
+        OnWheelStopped?.Invoke();
+    }
+
+    private void SubtractPointsFromAnimals()
+    {
+        foreach (Cart cart in carts)
+        {
+            if (!cart.IsEmpty)
+            {
+                Animal animal = cart.CurrentAnimal;
+                animal.ApplyEffects(AnimalEffectTrigger.OnDayEnd);
+
+                int negativePoints = -animal.CurrentPoints;
+                RoundManager.Instance.AddScore(negativePoints);
+
+                FloatingTextManager.Instance.SpawnText(
+                    negativePoints > 0 ? $"+{negativePoints}" : $"{negativePoints}",
+                    animal.transform.position,
+                    FloatingTextManager.pointsColor,
+                    1.5f
+                );
+            }
+        }
     }
 
     // Smooth easing function for gradual acceleration and deceleration

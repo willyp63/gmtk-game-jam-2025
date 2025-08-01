@@ -25,6 +25,9 @@ public class UIManager : Singleton<UIManager>
     private List<Button> rotateButtons;
 
     [SerializeField]
+    private Button endDayEarlyButton;
+
+    [SerializeField]
     private GameObject pointsIndicatorPrefab;
 
     [SerializeField]
@@ -203,6 +206,19 @@ public class UIManager : Singleton<UIManager>
             {
                 button.onClick.AddListener(() => OnRotateButtonClicked(steps));
             }
+        }
+
+        if (endDayEarlyButton != null)
+        {
+            endDayEarlyButton.onClick.AddListener(OnEndDayEarlyButtonClicked);
+        }
+    }
+
+    private void OnEndDayEarlyButtonClicked()
+    {
+        if (FerrisWheel.Instance != null)
+        {
+            FerrisWheel.Instance.EndDayEarly();
         }
     }
 
