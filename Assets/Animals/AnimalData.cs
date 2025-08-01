@@ -68,10 +68,10 @@ public class AnimalData : ScriptableObject
                 animal.MultiplyPoints((int)effect.value1);
                 break;
             case AnimalEffectType.CopyPoints:
-                animal.SetPoints(source.CurrentPoints);
+                source.SetPoints(animal.CurrentPoints);
                 break;
             case AnimalEffectType.SpinWheel:
-                FerrisWheel.Instance.RotateWheel(effect.value1 > 0, (int)Mathf.Abs(effect.value1));
+                FerrisWheel.Instance.RotateWheel(effect.value1 < 0, (int)Mathf.Abs(effect.value1));
                 break;
             default:
                 break;
