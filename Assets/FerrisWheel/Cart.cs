@@ -32,18 +32,22 @@ public class Cart : MonoBehaviour
         hingeJoint.connectedBody = hinge.GetComponent<Rigidbody2D>();
 
         Vector2 originalAnchor = hingeJoint.anchor;
+        Vector2 originalHingePosition = hinge.transform.localPosition;
+
         hingeJoint.anchor = Vector2.zero;
         transform.rotation = Quaternion.Euler(0, 0, 0);
+        hinge.transform.localPosition = originalHingePosition - originalAnchor;
 
         // wait for 1 frame and then set the anchor back
-        StartCoroutine(SetAnchorBack(originalAnchor));
+        StartCoroutine(SetAnchorBack(originalAnchor, originalHingePosition));
     }
 
-    private IEnumerator SetAnchorBack(Vector2 originalAnchor)
+    private IEnumerator SetAnchorBack(Vector2 originalAnchor, Vector2 originalHingePosition)
     {
         yield return null;
         HingeJoint2D hingeJoint = GetComponent<HingeJoint2D>();
         hingeJoint.anchor = originalAnchor;
+        hinge.transform.localPosition = originalHingePosition;
     }
 
     public void LoadAnimal(Animal animal)
