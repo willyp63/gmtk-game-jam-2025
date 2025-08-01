@@ -17,6 +17,15 @@ public class GameManager : Singleton<GameManager>
         RoundManager.Instance.StartFirstRound();
     }
 
+    private void Update()
+    {
+        // Check for Ctrl+R input to restart the game
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+        {
+            RestartGame();
+        }
+    }
+
     private void OnRoundStarted()
     {
         Debug.Log("Round started");
@@ -42,5 +51,25 @@ public class GameManager : Singleton<GameManager>
     private void OnRoundFailed()
     {
         Debug.Log("Round failed");
+        RestartGame();
+    }
+
+    private void RestartGame()
+    {
+        Debug.Log("Restarting game...");
+
+        // Stop any ongoing coroutines
+        StopAllCoroutines();
+
+        // Clear the ferris wheel
+        FerrisWheel.Instance.ClearWheel();
+
+        // Reinitialize everything
+        DeckManager.Instance.InitializeDeck();
+        DeckManager.Instance.RegenerateQueue();
+        FerrisWheelQueue.Instance.GenerateQueue();
+
+        // Start back at round 1
+        RoundManager.Instance.StartFirstRound();
     }
 }
