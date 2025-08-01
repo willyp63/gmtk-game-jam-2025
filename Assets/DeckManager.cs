@@ -3,16 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[System.Serializable]
+public class InitalDeckAnimal
+{
+    public AnimalData animalData;
+    public AnimalModifier modifier;
+    public int count;
+}
+
 public class DeckManager : Singleton<DeckManager>
 {
     [SerializeField]
-    private List<AnimalData> initialDeck = new();
+    private List<InitalDeckAnimal> initialDeck = new();
 
     // Player's full deck of animals
-    private List<AnimalData> playerDeck = new();
+    private List<DeckAnimal> playerDeck = new();
 
     // Daily queue of animals (shuffled from deck)
-    private Queue<AnimalData> animalQueue = new();
+    private Queue<DeckAnimal> animalQueue = new();
 
     // Events
     public System.Action OnDeckChanged;
@@ -21,7 +29,19 @@ public class DeckManager : Singleton<DeckManager>
     public void InitializeDeck()
     {
         playerDeck.Clear();
-        playerDeck.AddRange(initialDeck);
+
+        foreach (InitalDeckAnimal initialDeckAnimal in initialDeck)
+        {
+            for (int i = 0; i < initialDeckAnimal.count; i++)
+            {
+                DeckAnimal deckAnimal = new DeckAnimal(
+                    initialDeckAnimal.animalData,
+                    initialDeckAnimal.modifier
+                );
+                playerDeck.Add(deckAnimal);
+            }
+        }
+
         OnDeckChanged?.Invoke();
     }
 
@@ -30,7 +50,7 @@ public class DeckManager : Singleton<DeckManager>
         animalQueue.Clear();
 
         // Create a shuffled list from the deck
-        List<AnimalData> shuffledDeck = new List<AnimalData>(playerDeck);
+        List<DeckAnimal> shuffledDeck = new List<DeckAnimal>(playerDeck);
         ShuffleList(shuffledDeck);
 
         // Fill the queue up
@@ -42,9 +62,9 @@ public class DeckManager : Singleton<DeckManager>
         OnQueueRegenerated?.Invoke();
     }
 
-    public List<AnimalData> DequeueAnimals(int count)
+    public List<DeckAnimal> DequeueAnimals(int count)
     {
-        List<AnimalData> result = new List<AnimalData>();
+        List<DeckAnimal> result = new List<DeckAnimal>();
 
         for (int i = 0; i < count && animalQueue.Count > 0; i++)
         {
@@ -54,14 +74,24 @@ public class DeckManager : Singleton<DeckManager>
         return result;
     }
 
-    public void EnqueueAnimal(AnimalData animal)
+    public void EnqueueAnimal(DeckAnimal animal)
     {
         animalQueue.Enqueue(animal);
     }
 
-    public void AddAnimalToDeck(AnimalData animal)
+    public void AddAnimalToDeck(DeckAnimal animal)
     {
         playerDeck.Add(animal);
+        OnDeckChanged?.Invoke();
+    }
+
+    public void AddAnimalDataToDeck(
+        AnimalData animalData,
+        AnimalModifier modifier = AnimalModifier.Rainbow
+    )
+    {
+        DeckAnimal deckAnimal = new DeckAnimal(animalData, modifier);
+        playerDeck.Add(deckAnimal);
         OnDeckChanged?.Invoke();
     }
 
@@ -76,9 +106,9 @@ public class DeckManager : Singleton<DeckManager>
         }
     }
 
-    public List<AnimalData> GetPlayerDeck() => new List<AnimalData>(playerDeck);
+    public List<DeckAnimal> GetPlayerDeck() => new List<DeckAnimal>(playerDeck);
 
-    public Queue<AnimalData> GetAnimalQueue() => new Queue<AnimalData>(animalQueue);
+    public Queue<DeckAnimal> GetAnimalQueue() => new Queue<DeckAnimal>(animalQueue);
 
     public int GetQueueSize() => animalQueue.Count;
 

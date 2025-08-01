@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Animal : MonoBehaviour
 {
-    private AnimalData animalData;
-    public AnimalData AnimalData => animalData;
+    private DeckAnimal deckAnimal;
+    public DeckAnimal DeckAnimal => deckAnimal;
 
     private int currentPoints = 0;
     public int CurrentPoints => currentPoints;
@@ -19,6 +19,15 @@ public class Animal : MonoBehaviour
 
     [SerializeField]
     private TooltipTrigger tooltipTrigger;
+
+    [SerializeField]
+    private Material defaultMaterial;
+
+    [SerializeField]
+    private Material rainbowMaterial;
+
+    [SerializeField]
+    private Material fireMaterial;
 
     public System.Action<Vector3> OnDragToLoadingZone;
     public System.Action<Vector3> OnDragToSkipZone;
@@ -45,10 +54,10 @@ public class Animal : MonoBehaviour
 
     public void ApplyEffects(AnimalEffectTrigger trigger)
     {
-        if (animalData == null)
+        if (deckAnimal == null)
             return;
 
-        foreach (AnimalEffectData effect in animalData.effects)
+        foreach (AnimalEffectData effect in deckAnimal.BaseAnimalData.effects)
         {
             if (effect.trigger == trigger)
             {
@@ -97,31 +106,40 @@ public class Animal : MonoBehaviour
         snapPosition = transform.localPosition;
     }
 
-    public void InitializeAnimal(AnimalData animalData)
+    public void InitializeAnimal(DeckAnimal deckAnimal)
     {
-        this.animalData = animalData;
+        this.deckAnimal = deckAnimal;
 
         UpdateSnapPosition();
 
-        if (animalData != null)
+        // Set the sprite
+        if (spriteRenderer != null)
         {
-            // Set the sprite
-            if (spriteRenderer != null)
+            spriteRenderer.sprite = deckAnimal.BaseAnimalData.sprite;
+            switch (deckAnimal.Modifier)
             {
-                spriteRenderer.sprite = animalData.sprite;
+                case AnimalModifier.Rainbow:
+                    spriteRenderer.material = rainbowMaterial;
+                    break;
+                case AnimalModifier.Fire:
+                    spriteRenderer.material = fireMaterial;
+                    break;
+                default:
+                    spriteRenderer.material = defaultMaterial;
+                    break;
             }
+        }
 
-            // Set initial points
-            currentPoints = animalData.basePoints;
+        // Set initial points
+        currentPoints = deckAnimal.BaseAnimalData.basePoints;
 
-            // Set tooltip text
-            if (tooltipTrigger != null)
-            {
-                tooltipTrigger.SetTooltipText(
-                    animalData.GetTooltipText(),
-                    animalData.GetTooltipTextRight()
-                );
-            }
+        // Set tooltip text
+        if (tooltipTrigger != null)
+        {
+            tooltipTrigger.SetTooltipText(
+                deckAnimal.BaseAnimalData.GetTooltipText(),
+                deckAnimal.BaseAnimalData.GetTooltipTextRight()
+            );
         }
     }
 
@@ -137,9 +155,9 @@ public class Animal : MonoBehaviour
 
     public void ResetPoints()
     {
-        if (animalData != null)
+        if (deckAnimal != null)
         {
-            currentPoints = animalData.basePoints;
+            currentPoints = deckAnimal.BaseAnimalData.basePoints;
         }
         else
         {

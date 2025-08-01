@@ -31,23 +31,23 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         ClearQueue();
 
         // Get animals from the deck manager
-        List<AnimalData> animalDataList = DeckManager.Instance.DequeueAnimals(
+        List<DeckAnimal> deckAnimalList = DeckManager.Instance.DequeueAnimals(
             animalPositions.Count
         );
 
         // Start the animation coroutine
-        StartCoroutine(AnimateGenerateQueue(animalDataList));
+        StartCoroutine(AnimateGenerateQueue(deckAnimalList));
     }
 
-    private IEnumerator AnimateGenerateQueue(List<AnimalData> animalDataList)
+    private IEnumerator AnimateGenerateQueue(List<DeckAnimal> deckAnimalList)
     {
         // Calculate the distance from first animal position to new animal position
         float distance = Vector3.Distance(animalPositions[0].position, newAnimalPosition.position);
 
         // Create animals at their initial positions (off-screen to the left)
-        for (int i = 0; i < animalDataList.Count && i < animalPositions.Count; i++)
+        for (int i = 0; i < deckAnimalList.Count && i < animalPositions.Count; i++)
         {
-            Animal newAnimal = CreateAnimalInQueue(animalDataList[i], i);
+            Animal newAnimal = CreateAnimalInQueue(deckAnimalList[i], i);
 
             // Set initial position off-screen to the left
             Vector3 initialPosition = animalPositions[i].position - Vector3.right * distance;
@@ -95,7 +95,7 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         OnQueueChanged?.Invoke();
     }
 
-    private Animal CreateAnimalInQueue(AnimalData animalData, int position)
+    private Animal CreateAnimalInQueue(DeckAnimal deckAnimal, int position)
     {
         if (position > animalPositions.Count)
         {
@@ -111,7 +111,7 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         Animal newAnimal = Instantiate(animalPrefab, animalPosition.position, Quaternion.identity);
         newAnimal.transform.parent = animalPosition.gameObject.transform;
         newAnimal.transform.localPosition = Vector3.zero;
-        newAnimal.InitializeAnimal(animalData);
+        newAnimal.InitializeAnimal(deckAnimal);
 
         // Create loading zone event handler and store it
         System.Action<Vector3> loadingEventHandler = (Vector3 position) =>
@@ -199,8 +199,8 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         // Remove from queue
         queueAnimals.RemoveAt(animalIndex);
 
-        // Add back to deck queue
-        DeckManager.Instance.EnqueueAnimal(animal.AnimalData);
+        // Add back to the queue
+        DeckManager.Instance.EnqueueAnimal(animal.DeckAnimal);
 
         animal.transform.position = new Vector3(
             dragToPosition.x,
@@ -272,10 +272,10 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         // Create new animal off-screen first if we have animals left in deck
         if (!DeckManager.Instance.IsQueueEmpty())
         {
-            List<AnimalData> newAnimalData = DeckManager.Instance.DequeueAnimals(1);
-            if (newAnimalData.Count > 0)
+            List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(1);
+            if (newDeckAnimal.Count > 0)
             {
-                CreateAnimalInQueue(newAnimalData[0], animalPositions.Count);
+                CreateAnimalInQueue(newDeckAnimal[0], animalPositions.Count);
             }
         }
 
