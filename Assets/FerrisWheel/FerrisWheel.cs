@@ -5,6 +5,33 @@ using UnityEngine;
 public class FerrisWheel : Singleton<FerrisWheel>
 {
     [SerializeField]
+    private Cart cartPrefab;
+
+    [SerializeField]
+    private GameObject cartContainer;
+
+    [SerializeField]
+    private GameObject hingePrefab;
+
+    [Header("Dynamic Cart Configuration")]
+    [SerializeField]
+    private int numberOfCarts = 8; // Must be even and > 2
+
+    [SerializeField]
+    private float cartDistanceFromCenter = 3f; // Distance from wheel center to cart hinges
+
+    [SerializeField]
+    private Sprite wheelSpriteX6;
+
+    [SerializeField]
+    private Sprite wheelSpriteX8;
+
+    [SerializeField]
+    private SpriteRenderer wheelSpriteRenderer;
+
+    public int NumberOfCarts => numberOfCarts;
+    public float CartDistanceFromCenter => cartDistanceFromCenter;
+
     private List<Cart> carts = new(); // Cart #1 is initially at the top. Carts are in clockwise order.
     public List<Cart> Carts => carts;
 
@@ -23,14 +50,79 @@ public class FerrisWheel : Singleton<FerrisWheel>
     [SerializeField]
     private float rotationSpeed = 90f; // degrees per second
 
-    [SerializeField]
-    private float rotationAngle = 45f; // 360° / 8 carts = 45° per cart
+    private float rotationAngle = 45f;
 
     private int topCartIndex = 0;
     private bool isRotating = false;
 
     // Events
     public System.Action OnWheelStopped;
+
+    public void Initialize()
+    {
+        // Validate cart count
+        if (numberOfCarts < 4 || numberOfCarts % 2 != 0)
+        {
+            Debug.LogError(
+                $"FerrisWheel: numberOfCarts must be even and >= 4. Current value: {numberOfCarts}"
+            );
+            numberOfCarts = Mathf.Max(4, numberOfCarts + (numberOfCarts % 2));
+        }
+
+        // Calculate angle between carts
+        rotationAngle = 360f / numberOfCarts;
+
+        if (numberOfCarts % 3 == 0)
+        {
+            wheelSpriteRenderer.sprite = wheelSpriteX6;
+        }
+        else
+        {
+            wheelSpriteRenderer.sprite = wheelSpriteX8;
+        }
+
+        // Create carts and hinges dynamically
+        CreateCartsAndHinges();
+    }
+
+    private void CreateCartsAndHinges()
+    {
+        for (int i = 0; i < numberOfCarts; i++)
+        {
+            // Calculate position for this cart
+            // Start at top (270 degrees) and go clockwise
+            float angle = 360f - (i * rotationAngle);
+            Vector3 hingePosition =
+                transform.position
+                + Quaternion.Euler(0, 0, angle) * Vector3.up * cartDistanceFromCenter;
+
+            // Create hinge
+            GameObject hinge = Instantiate(
+                hingePrefab,
+                hingePosition,
+                Quaternion.identity,
+                transform
+            );
+            hinge.name = $"Hinge_{i + 1}";
+
+            // Create cart
+            Cart cart = Instantiate(
+                cartPrefab,
+                Vector3.zero,
+                Quaternion.identity,
+                cartContainer.transform
+            );
+            cart.name = $"Cart_{i + 1}";
+
+            // Initialize cart with hinge
+            cart.Initialize(hinge);
+
+            // Add to carts list
+            carts.Add(cart);
+        }
+
+        GetBottomCart().SetOpen(true);
+    }
 
     public bool CanLoadAnimal()
     {
@@ -93,9 +185,9 @@ public class FerrisWheel : Singleton<FerrisWheel>
         }
 
         float angle = (isClockwise ? -rotationAngle : rotationAngle) * steps;
-        Quaternion targetRotation = transform.rotation * Quaternion.Euler(0, 0, angle);
+        float targetAngle = transform.rotation.eulerAngles.z + angle;
 
-        Quaternion startRotation = transform.rotation;
+        float startAngle = transform.rotation.eulerAngles.z;
         float adjustedRotationSpeed = rotationSpeed * (1 + (steps - 1) * 0.15f);
         float elapsedTime = 0f;
         float duration = Mathf.Abs(angle) / adjustedRotationSpeed;
@@ -110,12 +202,14 @@ public class FerrisWheel : Singleton<FerrisWheel>
             float easedT = SmoothStep(t);
 
             // Use smooth interpolation for the rotation
-            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, easedT);
+            transform.rotation = Quaternion.Euler(
+                0,
+                0,
+                Mathf.Lerp(startAngle, targetAngle, easedT)
+            );
 
             // After each rotationAngle, apply OnRotate to all animals
-            float deltaAngle = Mathf.Abs(
-                transform.rotation.eulerAngles.z - startRotation.eulerAngles.z
-            );
+            float deltaAngle = Mathf.Abs(transform.rotation.eulerAngles.z - startAngle);
             if (currentStep < steps && deltaAngle >= rotationAngle * currentStep)
             {
                 topCartIndex = (topCartIndex + (isClockwise ? -1 : 1) + carts.Count) % carts.Count;
@@ -133,7 +227,7 @@ public class FerrisWheel : Singleton<FerrisWheel>
         }
 
         // Ensure we end up exactly at the target rotation
-        transform.rotation = targetRotation;
+        transform.rotation = Quaternion.Euler(0, 0, targetAngle);
 
         // Update the top cart index
         topCartIndex = (topCartIndex + (isClockwise ? -1 : 1) + carts.Count) % carts.Count;

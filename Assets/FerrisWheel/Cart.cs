@@ -12,6 +12,9 @@ public class Cart : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     [SerializeField]
+    private SpriteRenderer backSpriteRenderer;
+
+    [SerializeField]
     private Sprite closedSprite;
 
     [SerializeField]
@@ -21,6 +24,27 @@ public class Cart : MonoBehaviour
     public Animal CurrentAnimal => currentAnimal;
 
     public bool IsEmpty => currentAnimal == null;
+
+    public void Initialize(GameObject hinge)
+    {
+        this.hinge = hinge.transform;
+        HingeJoint2D hingeJoint = GetComponent<HingeJoint2D>();
+        hingeJoint.connectedBody = hinge.GetComponent<Rigidbody2D>();
+
+        Vector2 originalAnchor = hingeJoint.anchor;
+        hingeJoint.anchor = Vector2.zero;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        // wait for 1 frame and then set the anchor back
+        StartCoroutine(SetAnchorBack(originalAnchor));
+    }
+
+    private IEnumerator SetAnchorBack(Vector2 originalAnchor)
+    {
+        yield return null;
+        HingeJoint2D hingeJoint = GetComponent<HingeJoint2D>();
+        hingeJoint.anchor = originalAnchor;
+    }
 
     public void LoadAnimal(Animal animal)
     {

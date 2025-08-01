@@ -10,8 +10,10 @@ public class GameManager : Singleton<GameManager>
         RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
         RoundManager.Instance.OnRoundFailed += OnRoundFailed;
 
-        FerrisWheelQueue.Instance.GenerateQueue();
+        FerrisWheel.Instance.Initialize();
+        UIManager.Instance.Initialize();
 
+        FerrisWheelQueue.Instance.GenerateQueue();
         RoundManager.Instance.StartFirstRound();
     }
 

@@ -41,7 +41,7 @@ public class UIManager : Singleton<UIManager>
 
     private List<PointsIndicator> pointsIndicators = new List<PointsIndicator>();
 
-    private void Start()
+    public void Initialize()
     {
         InitializePointsIndicators();
         InitializeRotateButtons();
