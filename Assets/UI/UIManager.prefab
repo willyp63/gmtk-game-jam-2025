@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2816123158559465501
+--- !u!1 &8535433841484692353
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,55 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1019091427455425625}
-  - component: {fileID: 1354945637271728244}
+  - component: {fileID: 1713598957597465849}
+  - component: {fileID: 106264531587391494}
   m_Layer: 0
-  m_Name: Floating Text Manager
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1019091427455425625
+--- !u!4 &1713598957597465849
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2816123158559465501}
+  m_GameObject: {fileID: 8535433841484692353}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1354945637271728244
+--- !u!114 &106264531587391494
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2816123158559465501}
+  m_GameObject: {fileID: 8535433841484692353}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfeb147b3ffaa4e4285f8f1aed71a25e, type: 3}
+  m_Script: {fileID: 11500000, guid: 34aa22e7f2b9cf74da7b07e359b04abb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 0
-  floatingTextPrefab: {fileID: 7247385888741809004, guid: 4851919b08e97ab40a0ff33ecf402701, type: 3}
-  canvas: {fileID: 0}
+  roundText: {fileID: 0}
+  requiredPointsText: {fileID: 0}
+  pointsText: {fileID: 0}
+  energyText: {fileID: 0}
+  skipsText: {fileID: 0}
+  rotateButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  endDayEarlyButton: {fileID: 0}
+  menuButton: {fileID: 0}
+  pointsIndicatorPrefab: {fileID: 7328278271503827222, guid: a2ce5709a485c9d44b47d52315bcbf07, type: 3}
+  worldSpaceCanvas: {fileID: 0}
+  pointsIndicatorYOffset: 0
+  pointsIndicatorXOffset: 0.5

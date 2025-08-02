@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
+public class FerrisWheelQueue : MonoBehaviour
 {
     [SerializeField]
     private Animal animalPrefab;
@@ -116,9 +116,9 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
         // Create loading zone event handler and store it
         System.Action<Vector3> loadingEventHandler = (Vector3 position) =>
         {
-            if (FerrisWheel.Instance.CanLoadAnimal())
+            if (GameManager.Instance.FerrisWheel.CanLoadAnimal())
             {
-                FerrisWheel.Instance.LoadAnimal(newAnimal);
+                GameManager.Instance.FerrisWheel.LoadAnimal(newAnimal);
                 RemoveAnimal(newAnimal);
             }
         };
@@ -201,7 +201,7 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
 
         animal.transform.position = new Vector3(
             dragToPosition.x,
-            FerrisWheel.Instance.UnloadingLocation.position.y,
+            GameManager.Instance.FerrisWheel.UnloadingLocation.position.y,
             0f
         );
 
@@ -214,7 +214,7 @@ public class FerrisWheelQueue : Singleton<FerrisWheelQueue>
 
     private IEnumerator AnimateSkippedAnimal(Animal animal)
     {
-        if (animal == null || FerrisWheel.Instance.UnloadingLocation == null)
+        if (animal == null || GameManager.Instance.FerrisWheel.UnloadingLocation == null)
         {
             Destroy(animal?.gameObject);
             yield break;

@@ -6,9 +6,6 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [TextArea(3, 10)]
     public string tooltipText = "Default tooltip text";
 
-    [TextArea(3, 10)]
-    public string tooltipTextRight = "";
-
     [SerializeField]
     private bool useUIEvents = true; // Toggle between UI events and physics raycasting
 
@@ -73,7 +70,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             hoverTimer += Time.deltaTime;
             if (hoverTimer >= showDelay)
             {
-                TooltipUIManager.Instance.ShowTooltip(tooltipText, tooltipTextRight);
+                TooltipUIManager.Instance.ShowTooltip(tooltipText);
                 hoverTimer = 0f; // Reset to prevent multiple calls
             }
         }
@@ -144,10 +141,9 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     }
 
     // Method to update tooltip text dynamically
-    public void SetTooltipText(string newText, string newTextRight = "")
+    public void SetTooltipText(string newText)
     {
         tooltipText = newText;
-        tooltipTextRight = newTextRight;
     }
 
     // Method to enable the tooltip

@@ -12,9 +12,6 @@ public class Cart : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     [SerializeField]
-    private SpriteRenderer backSpriteRenderer;
-
-    [SerializeField]
     private Sprite closedSprite;
 
     [SerializeField]
@@ -44,7 +41,7 @@ public class Cart : MonoBehaviour
 
     private IEnumerator SetAnchorBack(Vector2 originalAnchor, Vector2 originalHingePosition)
     {
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
         HingeJoint2D hingeJoint = GetComponent<HingeJoint2D>();
         hingeJoint.anchor = originalAnchor;
         hinge.transform.localPosition = originalHingePosition;
@@ -77,5 +74,10 @@ public class Cart : MonoBehaviour
         {
             spriteRenderer.sprite = closedSprite;
         }
+    }
+
+    public void SetColor(Color color)
+    {
+        spriteRenderer.color = color;
     }
 }

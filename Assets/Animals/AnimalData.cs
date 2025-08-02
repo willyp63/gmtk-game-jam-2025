@@ -86,7 +86,10 @@ public class AnimalData : ScriptableObject
                 source.SetPoints(animal.CurrentPoints);
                 break;
             case AnimalEffectType.SpinWheel:
-                FerrisWheel.Instance.RotateWheel(effect.value1 < 0, (int)Mathf.Abs(effect.value1));
+                GameManager.Instance.FerrisWheel.RotateWheel(
+                    effect.value1 < 0,
+                    (int)Mathf.Abs(effect.value1)
+                );
                 break;
             default:
                 break;

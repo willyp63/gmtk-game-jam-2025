@@ -89,19 +89,25 @@ public class Animal : MonoBehaviour
             case AnimalEffectTarget.Adjacent:
                 return new List<Animal>
                 {
-                    FerrisWheel.Instance.GetAdjacentCart(AssignedCart, true).CurrentAnimal,
-                    FerrisWheel.Instance.GetAdjacentCart(AssignedCart, false).CurrentAnimal,
+                    GameManager
+                        .Instance.FerrisWheel.GetAdjacentCart(AssignedCart, true)
+                        .CurrentAnimal,
+                    GameManager
+                        .Instance.FerrisWheel.GetAdjacentCart(AssignedCart, false)
+                        .CurrentAnimal,
                 };
             case AnimalEffectTarget.Opposite:
                 return new List<Animal>
                 {
-                    FerrisWheel.Instance.GetOppositeCart(AssignedCart).CurrentAnimal,
+                    GameManager.Instance.FerrisWheel.GetOppositeCart(AssignedCart).CurrentAnimal,
                 };
             case AnimalEffectTarget.All:
-                return FerrisWheel.Instance.Carts.Select(cart => cart.CurrentAnimal).ToList();
+                return GameManager
+                    .Instance.FerrisWheel.Carts.Select(cart => cart.CurrentAnimal)
+                    .ToList();
             case AnimalEffectTarget.Random:
-                List<Cart> otherFullCarts = FerrisWheel
-                    .Instance.Carts.Where(cart => !cart.IsEmpty && cart != AssignedCart)
+                List<Cart> otherFullCarts = GameManager
+                    .Instance.FerrisWheel.Carts.Where(cart => !cart.IsEmpty && cart != AssignedCart)
                     .OrderBy(cart => Random.value)
                     .ToList();
                 if (otherFullCarts.Count > 0)
@@ -122,6 +128,14 @@ public class Animal : MonoBehaviour
     public void UpdateSnapPosition()
     {
         snapPosition = transform.localPosition;
+    }
+
+    public void DisableTooltip()
+    {
+        if (tooltipTrigger != null)
+        {
+            tooltipTrigger.DisableTooltip();
+        }
     }
 
     public void InitializeAnimal(DeckAnimal deckAnimal)
@@ -160,10 +174,7 @@ public class Animal : MonoBehaviour
         // Set tooltip text
         if (tooltipTrigger != null)
         {
-            tooltipTrigger.SetTooltipText(
-                deckAnimal.GetTooltipText(),
-                deckAnimal.GetTooltipTextRight()
-            );
+            tooltipTrigger.SetTooltipText(deckAnimal.GetTooltipText());
         }
     }
 
@@ -255,11 +266,11 @@ public class Animal : MonoBehaviour
         transform.localPosition = snapPosition;
 
         // Check loading zone
-        if (FerrisWheel.Instance.LoadingZone.Contains(dragToPosition))
+        if (GameManager.Instance.FerrisWheel.LoadingZone.Contains(dragToPosition))
         {
             OnDragToLoadingZone?.Invoke(dragToPosition);
         }
-        else if (FerrisWheel.Instance.SkipZone.Contains(dragToPosition))
+        else if (GameManager.Instance.FerrisWheel.SkipZone.Contains(dragToPosition))
         {
             OnDragToSkipZone?.Invoke(dragToPosition);
         }

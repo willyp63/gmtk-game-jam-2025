@@ -1,20 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    private FerrisWheel ferrisWheel;
+    public FerrisWheel FerrisWheel => ferrisWheel;
+
+    private FerrisWheelQueue ferrisWheelQueue;
+    public FerrisWheelQueue FerrisWheelQueue => ferrisWheelQueue;
+
     private void Start()
     {
         RoundManager.Instance.OnRoundStarted += OnRoundStarted;
         RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
         RoundManager.Instance.OnRoundFailed += OnRoundFailed;
 
-        FerrisWheel.Instance.Initialize();
-        UIManager.Instance.Initialize();
-
-        FerrisWheelQueue.Instance.GenerateQueue();
-        RoundManager.Instance.StartFirstRound();
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            RestartGame();
+        }
     }
 
     private void Update()
@@ -42,7 +48,7 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(2f);
 
-        FerrisWheelQueue.Instance.GenerateQueue();
+        ferrisWheelQueue.GenerateQueue();
         RoundManager.Instance.AdvanceToNextRound();
     }
 
@@ -52,20 +58,25 @@ public class GameManager : Singleton<GameManager>
         RestartGame();
     }
 
-    private void RestartGame()
+    public void RestartGame()
     {
         Debug.Log("Restarting game...");
 
-        // Stop any ongoing coroutines
         StopAllCoroutines();
 
-        // Clear the ferris wheel
-        FerrisWheel.Instance.ClearWheel();
+        ferrisWheel = FindObjectOfType<FerrisWheel>();
+        ferrisWheelQueue = FindObjectOfType<FerrisWheelQueue>();
+        if (ferrisWheel == null || ferrisWheelQueue == null)
+        {
+            Debug.LogError("GameManager: FerrisWheel or FerrisWheelQueue not found!");
+            return;
+        }
 
-        // Reinitialize everything
-        FerrisWheelQueue.Instance.GenerateQueue();
+        ferrisWheel.Initialize();
+        UIManager.Instance.Initialize();
+        RoundManager.Instance.Initialize();
 
-        // Start back at round 1
+        ferrisWheelQueue.GenerateQueue();
         RoundManager.Instance.StartFirstRound();
     }
 }

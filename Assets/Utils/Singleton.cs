@@ -3,16 +3,15 @@ using UnityEngine;
 public class Singleton<T> : MonoBehaviour
     where T : Component
 {
+    [SerializeField]
+    private bool dontDestroyOnLoad = false;
+
     private static T _instance;
-    private static bool _isDestroying = false;
 
     public static T Instance
     {
         get
         {
-            if (_isDestroying)
-                return null;
-
             if (_instance == null)
             {
                 _instance = FindObjectOfType<T>();
@@ -32,24 +31,12 @@ public class Singleton<T> : MonoBehaviour
         if (_instance == null)
         {
             _instance = this as T;
-            DontDestroyOnLoad(gameObject);
+            if (dontDestroyOnLoad)
+                DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {
             Destroy(gameObject);
         }
-    }
-
-    protected virtual void OnDestroy()
-    {
-        if (_instance == this)
-        {
-            _isDestroying = true;
-        }
-    }
-
-    protected virtual void OnApplicationQuit()
-    {
-        _isDestroying = true;
     }
 }

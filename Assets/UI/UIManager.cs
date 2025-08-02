@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
@@ -26,6 +27,9 @@ public class UIManager : Singleton<UIManager>
 
     [SerializeField]
     private Button endDayEarlyButton;
+
+    [SerializeField]
+    private Button menuButton;
 
     [SerializeField]
     private GameObject pointsIndicatorPrefab;
@@ -130,7 +134,7 @@ public class UIManager : Singleton<UIManager>
     private void InitializePointsIndicators()
     {
         if (
-            FerrisWheel.Instance == null
+            GameManager.Instance.FerrisWheel == null
             || pointsIndicatorPrefab == null
             || worldSpaceCanvas == null
         )
@@ -150,7 +154,7 @@ public class UIManager : Singleton<UIManager>
         pointsIndicators.Clear();
 
         // Get all cart hinges from the FerrisWheel
-        List<Cart> carts = FerrisWheel.Instance.Carts;
+        List<Cart> carts = GameManager.Instance.FerrisWheel.Carts;
 
         // Create a points indicator for each cart hinge
         foreach (Cart cart in carts)
@@ -212,21 +216,31 @@ public class UIManager : Singleton<UIManager>
         {
             endDayEarlyButton.onClick.AddListener(OnEndDayEarlyButtonClicked);
         }
+
+        if (menuButton != null)
+        {
+            menuButton.onClick.AddListener(OnMenuButtonClicked);
+        }
+    }
+
+    private void OnMenuButtonClicked()
+    {
+        SceneManager.LoadScene(0);
     }
 
     private void OnEndDayEarlyButtonClicked()
     {
-        if (FerrisWheel.Instance != null)
+        if (GameManager.Instance.FerrisWheel != null)
         {
-            FerrisWheel.Instance.EndDayEarly();
+            GameManager.Instance.FerrisWheel.EndDayEarly();
         }
     }
 
     private void OnRotateButtonClicked(int steps)
     {
-        if (FerrisWheel.Instance != null)
+        if (GameManager.Instance.FerrisWheel != null)
         {
-            FerrisWheel.Instance.RotateWheel(false, steps);
+            GameManager.Instance.FerrisWheel.RotateWheel(false, steps);
         }
     }
 }

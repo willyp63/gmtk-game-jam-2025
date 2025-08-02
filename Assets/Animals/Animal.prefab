@@ -197,13 +197,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tooltipText: Default tooltip text
-  tooltipTextRight: 
   useUIEvents: 0
   raycastLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   raycastDistance: 100
-  showDelay: 0.3
+  showDelay: 0
   tooltipEnabled: 1
 --- !u!95 &9143181607731577430
 Animator:

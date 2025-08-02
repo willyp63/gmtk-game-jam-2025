@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FerrisWheel : Singleton<FerrisWheel>
+public class FerrisWheel : MonoBehaviour
 {
+    [SerializeField]
+    private Animal animalPrefab;
+
     [SerializeField]
     private Cart cartPrefab;
 
@@ -50,6 +53,12 @@ public class FerrisWheel : Singleton<FerrisWheel>
     [SerializeField]
     private float rotationSpeed = 90f; // degrees per second
 
+    [SerializeField]
+    private bool isMenuWheel = false;
+
+    [SerializeField]
+    private float menuWheelRotationSpeed = 30f; // Degrees per second for menu wheel rotation
+
     private float rotationAngle = 45f;
 
     private int topCartIndex = 0;
@@ -57,6 +66,15 @@ public class FerrisWheel : Singleton<FerrisWheel>
 
     // Events
     public System.Action OnWheelStopped;
+
+    private void Awake()
+    {
+        if (isMenuWheel)
+        {
+            Initialize();
+            StartCoroutine(AutoRotateMenuWheel());
+        }
+    }
 
     public void Initialize()
     {
@@ -87,6 +105,13 @@ public class FerrisWheel : Singleton<FerrisWheel>
 
     private void CreateCartsAndHinges()
     {
+        // Define 5 distinct colors for the carts
+        Color[] cartColors = new Color[]
+        {
+            new Color(147f / 255f, 9f / 255f, 36f / 255f),
+            new Color(254f / 255f, 149f / 255f, 7f / 255f),
+        };
+
         for (int i = 0; i < numberOfCarts; i++)
         {
             // Calculate position for this cart
@@ -116,6 +141,9 @@ public class FerrisWheel : Singleton<FerrisWheel>
 
             // Initialize cart with hinge
             cart.Initialize(hinge);
+
+            // Assign color to cart
+            // cart.SetColor(cartColors[i % cartColors.Length]);
 
             // Add to carts list
             carts.Add(cart);
@@ -383,6 +411,82 @@ public class FerrisWheel : Singleton<FerrisWheel>
                     Destroy(animal.gameObject);
                 }
             }
+        }
+    }
+
+    private IEnumerator AutoRotateMenuWheel()
+    {
+        GetBottomCart().SetOpen(false);
+
+        // Load all carts with random animals (use DeckManager.DequeueAnimals to get the animals)
+        List<DeckAnimal> initialAnimals = DeckManager.Instance.DequeueAnimals(numberOfCarts);
+        for (int i = 0; i < carts.Count && i < initialAnimals.Count; i++)
+        {
+            if (initialAnimals[i] != null)
+            {
+                Animal newAnimal = Instantiate(
+                    animalPrefab,
+                    carts[i].transform.position,
+                    Quaternion.identity
+                );
+                newAnimal.InitializeAnimal(initialAnimals[i]);
+                carts[i].LoadAnimal(newAnimal);
+                newAnimal.DisableTooltip();
+                newAnimal.SetDragable(false);
+            }
+        }
+
+        // Track rotation to detect when we've rotated to the next cart position
+        float lastRotation = transform.eulerAngles.z;
+        float rotationPerCart = 360f / numberOfCarts;
+        float accumulatedRotation = 0f;
+
+        while (true)
+        {
+            // Continuously rotate at constant speed
+            transform.Rotate(0, 0, -menuWheelRotationSpeed * Time.deltaTime);
+
+            // Track accumulated rotation
+            float currentRotation = transform.eulerAngles.z;
+            float rotationDelta = Mathf.DeltaAngle(lastRotation, currentRotation);
+            accumulatedRotation += Mathf.Abs(rotationDelta);
+            lastRotation = currentRotation;
+
+            // Every time the wheel rotates to the next cart, unload the animal in the bottom cart and load a new random animal
+            if (accumulatedRotation >= rotationPerCart)
+            {
+                accumulatedRotation -= rotationPerCart;
+                topCartIndex = (topCartIndex - 1 + carts.Count) % carts.Count;
+
+                // Unload animal from bottom cart
+                Cart bottomCart = GetBottomCart();
+                if (!bottomCart.IsEmpty)
+                {
+                    Animal oldAnimal = bottomCart.CurrentAnimal;
+                    bottomCart.UnloadAnimal();
+                    if (oldAnimal != null)
+                    {
+                        Destroy(oldAnimal.gameObject);
+                    }
+                }
+
+                // Load new random animal
+                List<DeckAnimal> newAnimals = DeckManager.Instance.DequeueAnimals(1);
+                if (newAnimals.Count > 0 && newAnimals[0] != null)
+                {
+                    Animal newAnimal = Instantiate(
+                        animalPrefab,
+                        bottomCart.transform.position,
+                        Quaternion.identity
+                    );
+                    newAnimal.InitializeAnimal(newAnimals[0]);
+                    bottomCart.LoadAnimal(newAnimal);
+                    newAnimal.DisableTooltip();
+                    newAnimal.SetDragable(false);
+                }
+            }
+
+            yield return null;
         }
     }
 }

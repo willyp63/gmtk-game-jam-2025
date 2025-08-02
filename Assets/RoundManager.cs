@@ -47,9 +47,9 @@ public class RoundManager : Singleton<RoundManager>
     public bool IsRoundComplete => currentScore >= requiredScore;
     public bool CanSkip => currentSkipsUsed < skipsPerRound;
 
-    private void Start()
+    public void Initialize()
     {
-        FerrisWheel.Instance.OnWheelStopped += OnWheelStopped;
+        GameManager.Instance.FerrisWheel.OnWheelStopped += OnWheelStopped;
     }
 
     public void StartFirstRound()

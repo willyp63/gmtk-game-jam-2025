@@ -81,11 +81,6 @@ public class DeckAnimal
         }
     }
 
-    public string GetTooltipTextRight()
-    {
-        return "";
-    }
-
     public void SetModifier(AnimalModifier newModifier)
     {
         modifier = newModifier;
