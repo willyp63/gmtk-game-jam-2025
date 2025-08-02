@@ -32,7 +32,9 @@ public class FerrisWheelQueue : MonoBehaviour
 
         // Get animals from the deck manager
         List<DeckAnimal> deckAnimalList = DeckManager.Instance.DequeueAnimals(
-            animalPositions.Count
+            animalPositions.Count,
+            RoundManager.Instance.ModifierChance,
+            RoundManager.Instance.AllowedRarities
         );
 
         // Start the animation coroutine
@@ -267,7 +269,11 @@ public class FerrisWheelQueue : MonoBehaviour
         float elapsedTime = 0f;
 
         // Create new animal off-screen first
-        List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(1);
+        List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(
+            1,
+            RoundManager.Instance.ModifierChance,
+            RoundManager.Instance.AllowedRarities
+        );
         if (newDeckAnimal.Count > 0)
         {
             CreateAnimalInQueue(newDeckAnimal[0], animalPositions.Count);

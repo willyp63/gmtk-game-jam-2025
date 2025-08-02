@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Cow
   sprite: {fileID: 21300000, guid: 9aa9f648e4d99194f9cc5eaa0db071ed, type: 3}
-  basePoints: 25
+  basePoints: 30
   effects:
   - type: 0
     trigger: 1
     target: 1
-    value1: 25
+    value1: 20
     value2: 0
     value3: 0
     tooltipText: <color=#00ffff>UNLOAD:</color> <color=#B42FF7>#VAL# points</color>

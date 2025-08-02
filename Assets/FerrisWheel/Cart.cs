@@ -20,6 +20,7 @@ public class Cart : MonoBehaviour
 
     [SerializeField]
     private Light2D mainLight;
+    public Light2D MainLight => mainLight;
 
     [SerializeField]
     private List<Light2D> cartLights;
@@ -60,6 +61,7 @@ public class Cart : MonoBehaviour
         currentAnimal = animal;
         currentAnimal.transform.parent = transform;
         currentAnimal.transform.localPosition = Vector3.zero;
+        currentAnimal.transform.localRotation = Quaternion.identity;
 
         animal.AssignToCart(this);
         animal.UpdateSnapPosition();

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Kangaroo
   sprite: {fileID: 21300000, guid: 4b74b7df4783c51409109920b73aea7d, type: 3}
-  basePoints: 20
+  basePoints: 40
   effects:
   - type: 3
     trigger: 0
     target: 0
-    value1: 3
+    value1: 2
     value2: 0
     value3: 0
     tooltipText: <color=#00ffff>LOAD:</color> Rotate the wheel #VAL# steps

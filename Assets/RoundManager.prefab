@@ -45,8 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  initialRequiredScore: 100
-  requiredScoreIncreasePerRound: 50
-  energyPerDay: 20
-  energyIncreasePerRound: 2
-  skipsPerRound: 5
+  requiredScores: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
+  energyPerDay: 9
+  energyIncreasePerRound: 3
+  skipsPerRound: 2
+  skipsPerRoundIncreasePerRound: 1
+  initialModifierChance: 0
+  allowModifiersOnRound: 3
+  modifierChanceIncreasePerRound: 0.1
+  maxModifierChance: 0.5
+  allowUncommonOnRound: 2
+  allowRareOnRound: 4

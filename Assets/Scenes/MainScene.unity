@@ -4326,6 +4326,7 @@ MonoBehaviour:
   - {r: 1, g: 0.8, b: 0.2, a: 1}
   isMenuWheel: 0
   menuWheelRotationSpeed: 30
+  menuWheelModifierChance: 0.5
 --- !u!212 &917214672
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9124,12 +9125,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: nightTime
+      value: 0.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: globalLight
       value: 
       objectReference: {fileID: 619394801}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: lightsOnTime
-      value: 0.4
+      value: 0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: middayEndTime
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: lights.Array.size
@@ -9137,7 +9146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: lightsFullyOnTime
-      value: 0.6
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: morningLightColor.b
@@ -9265,7 +9274,7 @@ PrefabInstance:
       objectReference: {fileID: 1831803652}
     - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
       propertyPath: morningLightIntensity
-      value: 0.85
+      value: 0.9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9870,6 +9879,18 @@ PrefabInstance:
       value: DeckManager
       objectReference: {fileID: 0}
     - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: commonWeight
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: uncommonWeight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
       propertyPath: modifierOptions.Array.data[1].weight
       value: 0
       objectReference: {fileID: 0}
@@ -9885,6 +9906,46 @@ PrefabInstance:
       propertyPath: modifierOptions.Array.data[4].weight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[0].modifier
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[1].modifier
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[2].modifier
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[3].modifier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[4].modifier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[0].animalData
+      value: 
+      objectReference: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[1].animalData
+      value: 
+      objectReference: {fileID: 11400000, guid: eed5aee37648db147ba907ebaab945c9, type: 2}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[2].animalData
+      value: 
+      objectReference: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[3].animalData
+      value: 
+      objectReference: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    - target: {fileID: 4094751653550773572, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
+      propertyPath: invalidAnimals.Array.data[4].animalData
+      value: 
+      objectReference: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9959,6 +10020,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1063075881065407994, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
+      propertyPath: energyPerDay
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1063075881065407994, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
+      propertyPath: maxModifierChance
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1063075881065407994, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
+      propertyPath: modifierChanceIncreasePerRound
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 7786322802739981677, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
       propertyPath: m_RootOrder
       value: 5

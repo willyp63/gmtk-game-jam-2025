@@ -62,6 +62,9 @@ public class FerrisWheel : MonoBehaviour
     [SerializeField]
     private float menuWheelRotationSpeed = 30f; // Degrees per second for menu wheel rotation
 
+    [SerializeField]
+    private float menuWheelModifierChance = 0.5f;
+
     private float rotationAngle = 45f;
 
     private int topCartIndex = 0;
@@ -156,9 +159,20 @@ public class FerrisWheel : MonoBehaviour
             carts.Add(cart);
 
             // Add cart light to LightManager
-            foreach (var light in cart.CartLights)
+            if (!isMenuWheel)
             {
-                LightManager.Instance.AddLight(light);
+                foreach (var light in cart.CartLights)
+                {
+                    LightManager.Instance.AddLight(light);
+                }
+            }
+            else
+            {
+                foreach (var light in cart.CartLights)
+                {
+                    light.intensity *= 0.33f;
+                }
+                cart.MainLight.intensity = 0f;
             }
         }
 
@@ -441,7 +455,10 @@ public class FerrisWheel : MonoBehaviour
         GetBottomCart().SetOpen(false);
 
         // Load all carts with random animals (use DeckManager.DequeueAnimals to get the animals)
-        List<DeckAnimal> initialAnimals = DeckManager.Instance.DequeueAnimals(numberOfCarts);
+        List<DeckAnimal> initialAnimals = DeckManager.Instance.DequeueAnimals(
+            numberOfCarts,
+            menuWheelModifierChance
+        );
         for (int i = 0; i < carts.Count && i < initialAnimals.Count; i++)
         {
             if (initialAnimals[i] != null)
@@ -493,7 +510,10 @@ public class FerrisWheel : MonoBehaviour
                 }
 
                 // Load new random animal
-                List<DeckAnimal> newAnimals = DeckManager.Instance.DequeueAnimals(1);
+                List<DeckAnimal> newAnimals = DeckManager.Instance.DequeueAnimals(
+                    1,
+                    menuWheelModifierChance
+                );
                 if (newAnimals.Count > 0 && newAnimals[0] != null)
                 {
                     Animal newAnimal = Instantiate(

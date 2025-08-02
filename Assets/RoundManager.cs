@@ -7,10 +7,7 @@ using UnityEngine.Rendering.Universal;
 public class RoundManager : Singleton<RoundManager>
 {
     [SerializeField]
-    private int initialRequiredScore = 50;
-
-    [SerializeField]
-    private int requiredScoreIncreasePerRound = 10;
+    private List<int> requiredScores;
 
     [SerializeField]
     private int energyPerDay = 16;
@@ -21,6 +18,27 @@ public class RoundManager : Singleton<RoundManager>
     [SerializeField]
     private int skipsPerRound = 2;
 
+    [SerializeField]
+    private int skipsPerRoundIncreasePerRound = 1;
+
+    [SerializeField]
+    private float initialModifierChance = 0f;
+
+    [SerializeField]
+    private int allowModifiersOnRound = 3;
+
+    [SerializeField]
+    private float modifierChanceIncreasePerRound = 0.1f;
+
+    [SerializeField]
+    private float maxModifierChance = 0.5f;
+
+    [SerializeField]
+    private int allowUncommonOnRound = 2;
+
+    [SerializeField]
+    private int allowRareOnRound = 5;
+
     // Current state
     private int currentRound = 0;
     private int currentEnergy = 0;
@@ -28,6 +46,9 @@ public class RoundManager : Singleton<RoundManager>
     private int requiredScore = 0;
     private int currentSkipsUsed = 0;
     private int maxEnergy = 0;
+    private int maxSkips = 0;
+    private float modifierChance = 0f;
+    private List<Rarity> allowedRarities = new List<Rarity> { Rarity.Common };
     private bool lightsAreOn = false;
 
     // Events
@@ -44,20 +65,25 @@ public class RoundManager : Singleton<RoundManager>
     public int EnergyPerDay => energyPerDay;
     public int SkipsPerRound => skipsPerRound;
     public int CurrentSkipsUsed => currentSkipsUsed;
-    public int SkipsRemaining => skipsPerRound - currentSkipsUsed;
+    public int SkipsRemaining => maxSkips - currentSkipsUsed;
+    public float ModifierChance => modifierChance;
+    public List<Rarity> AllowedRarities => allowedRarities;
     public bool IsRoundComplete => currentScore >= requiredScore;
-    public bool CanSkip => currentSkipsUsed < skipsPerRound;
+    public bool CanSkip => currentSkipsUsed < maxSkips;
 
     public void Initialize()
     {
         GameManager.Instance.FerrisWheel.OnWheelStopped += OnWheelStopped;
-        maxEnergy = energyPerDay;
     }
 
     public void StartFirstRound()
     {
         currentRound = 1;
-        requiredScore = initialRequiredScore;
+        maxEnergy = energyPerDay;
+        maxSkips = skipsPerRound;
+        requiredScore = requiredScores[0];
+        modifierChance = initialModifierChance;
+        allowedRarities = new List<Rarity> { Rarity.Common };
 
         ResetRound(true);
 
@@ -67,7 +93,23 @@ public class RoundManager : Singleton<RoundManager>
     public void AdvanceToNextRound()
     {
         currentRound++;
-        requiredScore += requiredScoreIncreasePerRound;
+        requiredScore = requiredScores[currentRound - 1];
+
+        if (currentRound >= allowModifiersOnRound)
+        {
+            modifierChance += modifierChanceIncreasePerRound;
+            modifierChance = Mathf.Clamp(modifierChance, 0f, maxModifierChance);
+        }
+
+        if (currentRound >= allowUncommonOnRound && !allowedRarities.Contains(Rarity.Uncommon))
+        {
+            allowedRarities.Add(Rarity.Uncommon);
+        }
+
+        if (currentRound >= allowRareOnRound && !allowedRarities.Contains(Rarity.Rare))
+        {
+            allowedRarities.Add(Rarity.Rare);
+        }
 
         ResetRound();
 
@@ -97,6 +139,7 @@ public class RoundManager : Singleton<RoundManager>
         currentScore = 0;
         currentEnergy = energyPerDay + ((currentRound - 1) * energyIncreasePerRound);
         maxEnergy = currentEnergy;
+        maxSkips = skipsPerRound + ((currentRound - 1) * skipsPerRoundIncreasePerRound);
         currentSkipsUsed = 0;
         lightsAreOn = false;
 

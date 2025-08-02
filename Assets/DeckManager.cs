@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum Rarity
@@ -10,7 +11,7 @@ public enum Rarity
 }
 
 [System.Serializable]
-public class TestAnimal
+public class AnimalWithModifier
 {
     public AnimalData animalData;
     public AnimalModifier modifier;
@@ -23,23 +24,16 @@ public class AnimalOption
     public Rarity rarity;
 }
 
-[System.Serializable]
-public class ModifierOption
-{
-    public AnimalModifier modifier;
-    public float weight;
-}
-
 public class DeckManager : Singleton<DeckManager>
 {
     [SerializeField]
-    private List<TestAnimal> testAnimals = new();
+    private List<AnimalWithModifier> testAnimals = new();
 
     [SerializeField]
     private List<AnimalOption> animalOptions = new();
 
     [SerializeField]
-    private List<ModifierOption> modifierOptions = new();
+    private List<AnimalWithModifier> invalidAnimals = new();
 
     [SerializeField]
     private float commonWeight = 4;
@@ -56,31 +50,23 @@ public class DeckManager : Singleton<DeckManager>
 
     private void InitializeQueue()
     {
-        AnimalModifier[] modifiers = new AnimalModifier[]
+        foreach (var testAnimal in testAnimals)
         {
-            AnimalModifier.None,
-            AnimalModifier.Rainbow,
-            AnimalModifier.Negative,
-            AnimalModifier.Fire,
-            AnimalModifier.Lightning,
-        };
-
-        foreach (var modifier in modifiers)
-        {
-            foreach (var testAnimal in testAnimals)
+            if (testAnimal.animalData != null)
             {
-                if (testAnimal.animalData != null)
-                {
-                    DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, modifier);
-                    animalQueue.Enqueue(deckAnimal);
-                }
+                DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, testAnimal.modifier);
+                animalQueue.Enqueue(deckAnimal);
             }
         }
 
         isInitialized = true;
     }
 
-    public List<DeckAnimal> DequeueAnimals(int count)
+    public List<DeckAnimal> DequeueAnimals(
+        int count,
+        float modifierChance,
+        List<Rarity> allowedRarities = null
+    )
     {
         if (!isInitialized)
             InitializeQueue();
@@ -92,7 +78,7 @@ public class DeckManager : Singleton<DeckManager>
             // If queue is empty, generate a random animal
             if (animalQueue.Count == 0)
             {
-                DeckAnimal randomAnimal = GenerateRandomAnimal();
+                DeckAnimal randomAnimal = GenerateRandomAnimal(modifierChance, allowedRarities);
                 if (randomAnimal != null)
                 {
                     result.Add(randomAnimal);
@@ -108,24 +94,44 @@ public class DeckManager : Singleton<DeckManager>
         return result;
     }
 
-    private DeckAnimal GenerateRandomAnimal()
+    private DeckAnimal GenerateRandomAnimal(float modifierChance, List<Rarity> allowedRarities)
     {
-        // Select random animal data based on rarity weights
-        AnimalData selectedAnimalData = GetRandomAnimalData();
+        const int maxRetries = 100;
 
-        if (selectedAnimalData == null)
+        for (int attempt = 0; attempt < maxRetries; attempt++)
         {
-            return null;
+            // Select random animal data based on rarity weights
+            AnimalData selectedAnimalData = GetRandomAnimalData(allowedRarities);
+
+            if (selectedAnimalData == null)
+            {
+                Debug.LogWarning(
+                    $"Attempt {attempt + 1}: Failed to get random animal data, retrying..."
+                );
+                continue;
+            }
+
+            // Select random modifier based on rarity weights (with chance of no modifier)
+            AnimalModifier selectedModifier = GetRandomModifier(modifierChance);
+
+            if (
+                invalidAnimals.Any(a =>
+                    a.animalData == selectedAnimalData && a.modifier == selectedModifier
+                )
+            )
+            {
+                Debug.LogWarning($"Attempt {attempt + 1}: Generated invalid animal, retrying...");
+                continue;
+            }
+
+            return new DeckAnimal(selectedAnimalData, selectedModifier);
         }
 
-        // Select random modifier based on rarity weights (with chance of no modifier)
-        AnimalModifier selectedModifier = GetRandomModifier();
-
-        // Create DeckAnimal with selected data and modifier
-        return new DeckAnimal(selectedAnimalData, selectedModifier);
+        Debug.LogError($"Failed to generate valid animal after {maxRetries} attempts!");
+        return null;
     }
 
-    private AnimalData GetRandomAnimalData()
+    private AnimalData GetRandomAnimalData(List<Rarity> allowedRarities)
     {
         if (animalOptions.Count == 0)
         {
@@ -137,7 +143,10 @@ public class DeckManager : Singleton<DeckManager>
         float totalWeight = 0f;
         foreach (var option in animalOptions)
         {
-            totalWeight += GetWeightForRarity(option.rarity);
+            if (allowedRarities == null || allowedRarities.Contains(option.rarity))
+            {
+                totalWeight += GetWeightForRarity(option.rarity);
+            }
         }
 
         if (totalWeight <= 0f)
@@ -164,36 +173,21 @@ public class DeckManager : Singleton<DeckManager>
         return animalOptions[animalOptions.Count - 1].animalData;
     }
 
-    private AnimalModifier GetRandomModifier()
+    private AnimalModifier GetRandomModifier(float modifierChance)
     {
-        // Calculate total weight
-        float totalWeight = 0f;
-
-        foreach (var option in modifierOptions)
+        AnimalModifier[] modifiers = new AnimalModifier[]
         {
-            totalWeight += option.weight;
+            AnimalModifier.Rainbow,
+            AnimalModifier.Negative,
+            AnimalModifier.Fire,
+            AnimalModifier.Lightning,
+        };
+
+        if (Random.Range(0f, 1f) < modifierChance)
+        {
+            return modifiers[Random.Range(0, modifiers.Length)];
         }
 
-        if (totalWeight <= 0f)
-        {
-            return AnimalModifier.None;
-        }
-
-        // Generate random value
-        float randomValue = Random.Range(0f, totalWeight);
-        float currentWeight = 0f;
-
-        // Check modifier options first
-        foreach (var option in modifierOptions)
-        {
-            currentWeight += option.weight;
-            if (randomValue < currentWeight)
-            {
-                return option.modifier;
-            }
-        }
-
-        // If we haven't selected a modifier yet, return "None"
         return AnimalModifier.None;
     }
 

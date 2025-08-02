@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalName: Cat
   sprite: {fileID: 21300000, guid: 7e6b3e73e465ec14090403c9ca695ffd, type: 3}
-  basePoints: 30
+  basePoints: 20
   effects:
   - type: 0
     trigger: 6
     target: 0
-    value1: 30
+    value1: 40
     value2: 0
     value3: 0
     tooltipText: <color=#00ffff>PASS TOP:</color> <color=#B42FF7>#VAL# points</color>
