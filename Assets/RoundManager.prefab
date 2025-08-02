@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1063075881065407994
 MonoBehaviour:
@@ -45,22 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  initialRequiredScore: 20
+  initialRequiredScore: 100
   requiredScoreIncreasePerRound: 50
-  energyPerDay: 6
+  energyPerDay: 20
   energyIncreasePerRound: 2
-  skipsPerRound: 99
-  globalLight: {fileID: 0}
-  lights: []
-  morningLightColor: {r: 1, g: 0.92189413, b: 0.759434, a: 1}
-  middayLightColor: {r: 1, g: 1, b: 1, a: 1}
-  nightLightColor: {r: 0.3037113, g: 0.39436153, b: 0.8584906, a: 1}
-  morningLightIntensity: 0.8
-  middayLightIntensity: 1
-  nightLightIntensity: 0.3
-  morningTime: 0
-  middayStartTime: 0.2
-  middayEndTime: 0.3
-  nightTime: 0.8
-  lightsOnTime: 0.7
-  lightTransitionSpeed: 2
+  skipsPerRound: 5

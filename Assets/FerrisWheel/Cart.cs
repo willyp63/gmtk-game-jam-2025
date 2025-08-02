@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Cart : MonoBehaviour
 {
@@ -16,6 +17,13 @@ public class Cart : MonoBehaviour
 
     [SerializeField]
     private Sprite openSprite;
+
+    [SerializeField]
+    private Light2D mainLight;
+
+    [SerializeField]
+    private List<Light2D> cartLights;
+    public List<Light2D> CartLights => cartLights;
 
     private Animal currentAnimal;
     public Animal CurrentAnimal => currentAnimal;
@@ -78,6 +86,12 @@ public class Cart : MonoBehaviour
 
     public void SetColor(Color color)
     {
-        spriteRenderer.color = color;
+        foreach (var light in cartLights)
+        {
+            if (light != mainLight)
+            {
+                light.color = color;
+            }
+        }
     }
 }

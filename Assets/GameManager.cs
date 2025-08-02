@@ -95,6 +95,7 @@ public class GameManager : Singleton<GameManager>
         }
 
         ferrisWheel.Initialize();
+        ferrisWheel.ClearWheel();
         UIManager.Instance.Initialize();
         RoundManager.Instance.Initialize();
 

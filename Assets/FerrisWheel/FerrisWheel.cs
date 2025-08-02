@@ -54,6 +54,9 @@ public class FerrisWheel : MonoBehaviour
     private float rotationSpeed = 90f; // degrees per second
 
     [SerializeField]
+    private List<Color> cartColors;
+
+    [SerializeField]
     private bool isMenuWheel = false;
 
     [SerializeField]
@@ -145,8 +148,18 @@ public class FerrisWheel : MonoBehaviour
             // Initialize cart with hinge
             cart.Initialize(hinge);
 
+            // Set cart color
+            int numColorsToUse = numberOfCarts % 3 == 0 ? 3 : 4;
+            cart.SetColor(cartColors[i % numColorsToUse]);
+
             // Add to carts list
             carts.Add(cart);
+
+            // Add cart light to LightManager
+            foreach (var light in cart.CartLights)
+            {
+                LightManager.Instance.AddLight(light);
+            }
         }
 
         GetBottomCart().SetOpen(true);

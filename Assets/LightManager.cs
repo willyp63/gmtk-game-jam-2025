@@ -11,6 +11,8 @@ public class LightManager : Singleton<LightManager>
     [SerializeField]
     private List<Light2D> lights;
 
+    private List<Light2D> addedLights = new List<Light2D>();
+
     [SerializeField]
     private Color morningLightColor = new Color(1f, 0.9f, 0.7f, 1f); // Warm morning light
 
@@ -42,12 +44,44 @@ public class LightManager : Singleton<LightManager>
     private float nightTime = 0.7f; // From middayEndTime to nightTime is transition from midday to night & from nightTime to 1 is purely night light
 
     [SerializeField]
-    private float lightsOnTime = 0.75f; // Time when lights turn on
+    private float lightsOnTime = 0.5f; // Time when lights start turning on
+
+    [SerializeField]
+    private float lightsFullyOnTime = 0.75f; // Time when lights reach full brightness
 
     private bool lightsAreOn = false;
+    private Dictionary<Light2D, float> originalIntensities = new Dictionary<Light2D, float>();
+    private Coroutine lightsTransitionCoroutine;
+
+    public List<Light2D> GetAllLights()
+    {
+        List<Light2D> allLights = new List<Light2D>(lights);
+        allLights.AddRange(addedLights);
+        return allLights;
+    }
+
+    private void Awake()
+    {
+        // Store original intensities of all lights
+        foreach (var light in lights)
+        {
+            if (light != null)
+            {
+                originalIntensities[light] = light.intensity;
+            }
+        }
+    }
+
+    public void AddLight(Light2D light)
+    {
+        originalIntensities[light] = light.intensity;
+        addedLights.Add(light);
+    }
 
     public void UpdateLighting(float timeRatio, float transitionDuration)
     {
+        Debug.Log("Updating lighting: " + timeRatio);
+
         if (globalLight == null)
             return;
 
@@ -91,17 +125,96 @@ public class LightManager : Singleton<LightManager>
         // Smoothly transition the global light
         StartCoroutine(TransitionGlobalLight(targetColor, targetIntensity, transitionDuration));
 
-        // Handle individual lights
-        bool shouldTurnOnLights = timeRatio <= lightsOnTime;
-        if (shouldTurnOnLights && !lightsAreOn)
+        // Handle individual lights with gradual intensity transition
+        UpdateLightsIntensity(timeRatio, transitionDuration);
+    }
+
+    private void UpdateLightsIntensity(float timeRatio, float transitionDuration)
+    {
+        float targetIntensityMultiplier;
+
+        if (timeRatio < lightsOnTime)
         {
-            SetLightsActive(true);
-            lightsAreOn = true;
+            // Lights should be off
+            targetIntensityMultiplier = 0f;
         }
-        else if (!shouldTurnOnLights && lightsAreOn)
+        else if (timeRatio >= lightsFullyOnTime)
         {
-            SetLightsActive(false);
-            lightsAreOn = false;
+            // Lights should be at full brightness
+            targetIntensityMultiplier = 1f;
+        }
+        else
+        {
+            // Lights should be gradually turning on
+            targetIntensityMultiplier =
+                (timeRatio - lightsOnTime) / (lightsFullyOnTime - lightsOnTime);
+        }
+
+        // Start smooth transition to target intensity
+        if (lightsTransitionCoroutine != null)
+        {
+            StopCoroutine(lightsTransitionCoroutine);
+        }
+        lightsTransitionCoroutine = StartCoroutine(
+            TransitionLightsIntensity(targetIntensityMultiplier, transitionDuration)
+        );
+    }
+
+    private IEnumerator TransitionLightsIntensity(float targetIntensityMultiplier, float duration)
+    {
+        // Get current intensity multiplier (average of all lights)
+        float currentIntensityMultiplier = 0f;
+        int validLights = 0;
+
+        List<Light2D> lightsToUpdate = new List<Light2D>(lights);
+        lightsToUpdate.AddRange(addedLights);
+
+        foreach (var light in lightsToUpdate)
+        {
+            if (light != null && originalIntensities.ContainsKey(light))
+            {
+                currentIntensityMultiplier += light.intensity / originalIntensities[light];
+                validLights++;
+            }
+        }
+
+        if (validLights > 0)
+        {
+            currentIntensityMultiplier /= validLights;
+        }
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            float currentMultiplier = Mathf.Lerp(
+                currentIntensityMultiplier,
+                targetIntensityMultiplier,
+                t
+            );
+            SetLightsIntensity(currentMultiplier);
+
+            yield return null;
+        }
+
+        // Ensure we reach the exact target values
+        SetLightsIntensity(targetIntensityMultiplier);
+    }
+
+    private void SetLightsIntensity(float intensityMultiplier)
+    {
+        List<Light2D> lightsToUpdate = GetAllLights();
+        foreach (var light in lightsToUpdate)
+        {
+            if (light != null && originalIntensities.ContainsKey(light))
+            {
+                float targetIntensity = originalIntensities[light] * intensityMultiplier;
+                light.intensity = targetIntensity;
+                light.enabled = intensityMultiplier > 0f;
+            }
         }
     }
 
@@ -133,7 +246,8 @@ public class LightManager : Singleton<LightManager>
 
     public void SetLightsActive(bool active)
     {
-        foreach (var light in lights)
+        List<Light2D> lightsToUpdate = GetAllLights();
+        foreach (var light in lightsToUpdate)
         {
             if (light != null)
             {

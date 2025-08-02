@@ -52,7 +52,6 @@ public class RoundManager : Singleton<RoundManager>
     {
         GameManager.Instance.FerrisWheel.OnWheelStopped += OnWheelStopped;
         maxEnergy = energyPerDay;
-        UpdateLighting(0.5f);
     }
 
     public void StartFirstRound()
@@ -60,7 +59,7 @@ public class RoundManager : Singleton<RoundManager>
         currentRound = 1;
         requiredScore = initialRequiredScore;
 
-        ResetRound();
+        ResetRound(true);
 
         OnRoundStarted?.Invoke();
     }
@@ -93,7 +92,7 @@ public class RoundManager : Singleton<RoundManager>
         }
     }
 
-    private void ResetRound()
+    private void ResetRound(bool isFirstRound = false)
     {
         currentScore = 0;
         currentEnergy = energyPerDay + ((currentRound - 1) * energyIncreasePerRound);
@@ -108,7 +107,7 @@ public class RoundManager : Singleton<RoundManager>
         OnEnergyChanged?.Invoke();
         OnSkipsChanged?.Invoke();
 
-        UpdateLighting(0.5f);
+        UpdateLighting(isFirstRound ? 0f : 0.5f);
     }
 
     public void AddScore(int points)
