@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class RoundManager : Singleton<RoundManager>
 {
@@ -26,13 +27,13 @@ public class RoundManager : Singleton<RoundManager>
     private int currentScore = 0;
     private int requiredScore = 0;
     private int currentSkipsUsed = 0;
+    private int maxEnergy = 0;
+    private bool lightsAreOn = false;
 
     // Events
     public event Action OnScoreChanged;
     public event Action OnEnergyChanged;
     public event Action OnSkipsChanged;
-    public event Action OnRoundCompleted;
-    public event Action OnRoundFailed;
     public event Action OnRoundStarted;
 
     // Properties
@@ -50,6 +51,8 @@ public class RoundManager : Singleton<RoundManager>
     public void Initialize()
     {
         GameManager.Instance.FerrisWheel.OnWheelStopped += OnWheelStopped;
+        maxEnergy = energyPerDay;
+        UpdateLighting(0.5f);
     }
 
     public void StartFirstRound()
@@ -74,15 +77,18 @@ public class RoundManager : Singleton<RoundManager>
 
     private void OnWheelStopped()
     {
+        Debug.Log("OnWheelStopped");
         if (currentEnergy <= 0)
         {
             if (IsRoundComplete)
             {
-                OnRoundCompleted?.Invoke();
+                Debug.Log("OnRoundCompleted");
+                GameManager.Instance.CompleteRound();
             }
             else
             {
-                OnRoundFailed?.Invoke();
+                Debug.Log("OnRoundFailed");
+                GameManager.Instance.FailRound();
             }
         }
     }
@@ -91,11 +97,18 @@ public class RoundManager : Singleton<RoundManager>
     {
         currentScore = 0;
         currentEnergy = energyPerDay + ((currentRound - 1) * energyIncreasePerRound);
+        maxEnergy = currentEnergy;
         currentSkipsUsed = 0;
+        lightsAreOn = false;
+
+        // Turn off all lights at the start of a new day
+        LightManager.Instance.SetLightsActive(false);
 
         OnScoreChanged?.Invoke();
         OnEnergyChanged?.Invoke();
         OnSkipsChanged?.Invoke();
+
+        UpdateLighting(0.5f);
     }
 
     public void AddScore(int points)
@@ -114,7 +127,19 @@ public class RoundManager : Singleton<RoundManager>
         currentEnergy -= amount;
         OnEnergyChanged?.Invoke();
 
+        float transitionDuration =
+            amount <= 3 ? GameManager.Instance.FerrisWheel.GetRotationDuration(amount) : 0.5f;
+        UpdateLighting(transitionDuration);
+
         return true;
+    }
+
+    private void UpdateLighting(float transitionDuration)
+    {
+        float energyRatio = maxEnergy > 0 ? (float)currentEnergy / maxEnergy : 0f;
+        float timeRatio = 1 - energyRatio;
+
+        LightManager.Instance.UpdateLighting(timeRatio, transitionDuration);
     }
 
     public bool ConsumeSkip()

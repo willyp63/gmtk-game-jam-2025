@@ -835,7 +835,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1728955847}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.24121669
+  m_Size: 0.36064628
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1098,7 +1098,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &445304858
 PrefabInstance:
@@ -1926,7 +1926,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &694491533
 GameObject:
@@ -2589,7 +2589,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &887540534
 GameObject:
@@ -2889,7 +2889,7 @@ MonoBehaviour:
     m_Center: {x: 0, y: -3.95, z: 0}
     m_Extent: {x: 1, y: 1, z: 0}
   unloadingLocation: {fileID: 2092289886}
-  rotationSpeed: 30
+  rotationSpeed: 45
   isMenuWheel: 0
   menuWheelRotationSpeed: 30
 --- !u!212 &917214672
@@ -3033,7 +3033,7 @@ Transform:
   - {fileID: 790887969}
   - {fileID: 610887022}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &979771372
 GameObject:
@@ -3144,7 +3144,7 @@ Transform:
   - {fileID: 917214670}
   - {fileID: 694491534}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1047827345
 GameObject:
@@ -4635,7 +4635,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1816321579
 GameObject:
@@ -4935,8 +4935,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4953,14 +4953,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
-  m_HorizontalAlignment: 2
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -5043,7 +5043,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2659073998607140344, guid: b377876f5ca7efa40bd0ee88af3b6bc9, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2659073998607140344, guid: b377876f5ca7efa40bd0ee88af3b6bc9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5104,7 +5104,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1019091427455425625, guid: 38baf436020f585439890396d7b84fde, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1019091427455425625, guid: 38baf436020f585439890396d7b84fde, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5674,7 +5674,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2103469444
 GameObject:
@@ -5811,6 +5811,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2103469444}
   m_CullTransparentMesh: 1
+--- !u!1001 &1015170806462916428
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 116019117793561577, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_Name
+      value: LightManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 176389774121488621, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6812250973221296963, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
+      propertyPath: globalLight
+      value: 
+      objectReference: {fileID: 619394801}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 95ff61d15c576a6439420cd6dab0f56a, type: 3}
 --- !u!224 &2293890822723130898
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6093,6 +6158,68 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 106264531587391494, guid: 44433ca8ccf0a154ebcd421d04007ef2, type: 3}
+      propertyPath: helpText
+      value: '<size=32><b>Congrats on your new position as Wheel Operator!</b></size>
+
+        Load
+        animals onto the wheel, let them accumulate points while riding, then unload
+        them to collect those points. Meet your daily point target to keep your job!
+
+
+        <size=32><b>Queue
+        Management</b></size>
+
+        You see the next 3 animals waiting in line:
+
+        -
+        <b>Load:</b> Drag any animal to the bottom cart (when empty)
+
+        - <b>Skip:</b>
+        Drag any animal to the right of the wheel (uses one daily skip)
+
+        -
+        When an animal leaves, the queue advances and a new animal appears
+
+
+        <size=32><b>Wheel
+        Operation</b></size>
+
+        Rotate the wheel 1, 2, or 3 steps using the
+        buttons or number keys. Each rotation uses your limited daily steps and advances
+        time.
+
+
+        <size=32><b>Points & Progression</b></size>
+
+        - Animals
+        in the bottom cart unload automatically when the wheel stops, giving you
+        their accumulated points
+
+        - Animals have base points and special
+        abilities (hover to see details)
+
+        - Animals left on the wheel at
+        day''s end subtract their points from your score
+
+        - Meet the daily
+        point target to advance; fail and you''re fired
+
+        - Each new day has
+        higher targets, more rotation steps, and more skips
+
+
+        <b>You can
+        view this letter at any time by pressing the help button.</b>
+
+
+        <i>Good
+        luck at Wacky Wharf!</i>'
+      objectReference: {fileID: 0}
+    - target: {fileID: 106264531587391494, guid: 44433ca8ccf0a154ebcd421d04007ef2, type: 3}
+      propertyPath: helpTitle
+      value: Welcome!
+      objectReference: {fileID: 0}
+    - target: {fileID: 106264531587391494, guid: 44433ca8ccf0a154ebcd421d04007ef2, type: 3}
       propertyPath: roundText
       value: 
       objectReference: {fileID: 95329108}
@@ -6178,7 +6305,7 @@ PrefabInstance:
       objectReference: {fileID: 786185547}
     - target: {fileID: 1713598957597465849, guid: 44433ca8ccf0a154ebcd421d04007ef2, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1713598957597465849, guid: 44433ca8ccf0a154ebcd421d04007ef2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6239,7 +6366,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 979610089905656547, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 979610089905656547, guid: c908a0b593b2a07449cec85e5f345522, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6298,17 +6425,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3851845397462385580, guid: baa530dbead6f144caa023cdd6a70e03, type: 3}
-      propertyPath: ferrisWheel
-      value: 
-      objectReference: {fileID: 917214671}
-    - target: {fileID: 3851845397462385580, guid: baa530dbead6f144caa023cdd6a70e03, type: 3}
-      propertyPath: ferrisWheelQueue
-      value: 
-      objectReference: {fileID: 954329494}
     - target: {fileID: 4534495726369979481, guid: baa530dbead6f144caa023cdd6a70e03, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4534495726369979481, guid: baa530dbead6f144caa023cdd6a70e03, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6367,9 +6486,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1063075881065407994, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
+      propertyPath: globalLight
+      value: 
+      objectReference: {fileID: 619394801}
     - target: {fileID: 7786322802739981677, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7786322802739981677, guid: 1acae891b2ba7ae4eb77614e7bdc748b, type: 3}
       propertyPath: m_LocalPosition.x

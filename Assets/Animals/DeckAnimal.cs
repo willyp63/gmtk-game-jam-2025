@@ -187,7 +187,7 @@ public class DeckAnimal
             effect.tooltipText = Regex.Replace(
                 effect.tooltipText,
                 @"<color=#00ffff>(.*?)</color>",
-                "ROTATE:"
+                "<color=#00ffff>ROTATE:</color>"
             );
         }
     }

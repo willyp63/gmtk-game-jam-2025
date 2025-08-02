@@ -35,6 +35,13 @@ public class UIManager : Singleton<UIManager>
     private Button helpButton;
 
     [SerializeField]
+    private string helpTitle = "Welcome to Wacky Wharf!";
+
+    [SerializeField]
+    [TextArea(8, 12)]
+    private string helpText = "";
+
+    [SerializeField]
     private GameObject pointsIndicatorPrefab;
 
     [SerializeField]
@@ -81,6 +88,7 @@ public class UIManager : Singleton<UIManager>
         InitializeRotateButtons();
         SubscribeToRoundManagerEvents();
         UpdateAllDisplays();
+        UpdateButtonStates();
         HideDialog();
     }
 
@@ -140,10 +148,38 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    private void UpdateButtonStates()
+    {
+        bool wheelIsRotating =
+            GameManager.Instance.FerrisWheel != null && GameManager.Instance.FerrisWheel.IsRotating;
+        int currentEnergy = RoundManager.Instance.CurrentEnergy;
+
+        // Update rotate buttons
+        for (int i = 0; i < rotateButtons.Count; i++)
+        {
+            if (rotateButtons[i] != null)
+            {
+                int energyRequired = i + 1; // First button = 1 energy, second button = 2 energy, etc.
+                bool hasEnoughEnergy = currentEnergy >= energyRequired;
+                bool canRotate = !wheelIsRotating && hasEnoughEnergy;
+
+                rotateButtons[i].interactable = canRotate;
+            }
+        }
+
+        // Update end day early button
+        if (endDayEarlyButton != null)
+        {
+            bool canEndDay = !wheelIsRotating && currentEnergy > 0;
+            endDayEarlyButton.interactable = canEndDay;
+        }
+    }
+
     private void Update()
     {
         UpdatePointsIndicators();
         CheckRotateButtons();
+        UpdateButtonStates();
     }
 
     private void CheckRotateButtons()
@@ -255,30 +291,23 @@ public class UIManager : Singleton<UIManager>
 
         if (helpButton != null)
         {
-            helpButton.onClick.AddListener(OnHelpButtonClicked);
+            helpButton.onClick.AddListener(ShowHelpDialog);
         }
     }
 
-    private void OnHelpButtonClicked()
+    public void ShowHelpDialog()
     {
-        ShowDialog(
-            "Congratulations!",
-            "You've been hired to operate the Ferris Wheel here at Wacky Wharf!\n\nYour job is to load animals onto the wheel and rotate it to unload them at the other end. You'll earn points for each animal you unload, and you'll lose points for each animal you don't unload. You'll also lose energy for each skip you take. You can skip a cart by pressing the spacebar. You can end the day early by pressing the end day early button. You can rotate the wheel by pressing the rotate buttons. You can end the day by reaching the required score. You can restart the day by pressing the restart button. You can quit the game by pressing the menu button.",
-            "DISMISS",
-            "",
-            850f,
-            () => { }
-        );
+        ShowDialog(helpTitle, helpText, "DISMISS", "", 950f, () => { });
     }
 
     private void OnMenuButtonClicked()
     {
         ShowDialog(
-            "Go to Main Menu?",
+            "Main Menu?",
             "You will lose all your progress and have to start over.",
             "MAIN MENU",
             "CANCEL",
-            500f,
+            400f,
             () =>
             {
                 SceneManager.LoadScene(0);
@@ -315,16 +344,16 @@ public class UIManager : Singleton<UIManager>
         {
             // Set the dialog content
             if (dialogTitleText != null)
-                dialogTitleText.text = title;
+                dialogTitleText.text = title.ToUpper();
 
             if (dialogBodyText != null)
                 dialogBodyText.text = body;
 
             if (dialogConfirmButtonText != null)
-                dialogConfirmButtonText.text = confirmButtonText;
+                dialogConfirmButtonText.text = confirmButtonText.ToUpper();
 
             if (dialogCancelButtonText != null)
-                dialogCancelButtonText.text = cancelButtonText;
+                dialogCancelButtonText.text = cancelButtonText.ToUpper();
 
             // Store the callback
             currentDialogCallback = callback;

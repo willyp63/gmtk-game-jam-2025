@@ -63,9 +63,14 @@ public class FerrisWheel : MonoBehaviour
 
     private int topCartIndex = 0;
     private bool isRotating = false;
+    private bool isInitialized = false;
+
+    // Public property to check if wheel is rotating
+    public bool IsRotating => isRotating;
 
     // Events
     public System.Action OnWheelStopped;
+    public System.Action OnWheelRotated;
 
     private void Awake()
     {
@@ -78,6 +83,9 @@ public class FerrisWheel : MonoBehaviour
 
     public void Initialize()
     {
+        if (isInitialized)
+            return;
+
         // Validate cart count
         if (numberOfCarts < 4 || numberOfCarts % 2 != 0)
         {
@@ -101,6 +109,8 @@ public class FerrisWheel : MonoBehaviour
 
         // Create carts and hinges dynamically
         CreateCartsAndHinges();
+
+        isInitialized = true;
     }
 
     private void CreateCartsAndHinges()
@@ -193,6 +203,12 @@ public class FerrisWheel : MonoBehaviour
         StartCoroutine(Rotate(isClockwise, steps));
     }
 
+    public float GetRotationDuration(int steps)
+    {
+        float adjustedRotationSpeed = rotationSpeed * (1 + (steps - 1) * 0.15f);
+        return Mathf.Abs(rotationAngle * steps) / adjustedRotationSpeed;
+    }
+
     private IEnumerator Rotate(bool isClockwise, int steps)
     {
         isRotating = true;
@@ -206,9 +222,8 @@ public class FerrisWheel : MonoBehaviour
         float targetAngle = transform.rotation.eulerAngles.z + angle;
 
         float startAngle = transform.rotation.eulerAngles.z;
-        float adjustedRotationSpeed = rotationSpeed * (1 + (steps - 1) * 0.15f);
         float elapsedTime = 0f;
-        float duration = Mathf.Abs(angle) / adjustedRotationSpeed;
+        float duration = GetRotationDuration(steps);
         int currentStep = 1;
 
         while (elapsedTime < duration)
@@ -239,6 +254,8 @@ public class FerrisWheel : MonoBehaviour
                 }
                 GetTopCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassTop);
                 GetBottomCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassBottom);
+
+                OnWheelRotated?.Invoke();
             }
 
             yield return null;
@@ -256,6 +273,8 @@ public class FerrisWheel : MonoBehaviour
         }
         GetTopCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassTop);
         GetBottomCart().CurrentAnimal?.ApplyEffects(AnimalEffectTrigger.OnPassBottom);
+
+        OnWheelRotated?.Invoke();
 
         foreach (Cart cart in carts)
         {

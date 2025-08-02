@@ -5,6 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField]
+    [TextArea(8, 12)]
+    private string roundCompletedDialogBody = "";
+
+    [SerializeField]
+    [TextArea(8, 12)]
+    private string roundFailedDialogBody = "";
+
+    [SerializeField]
+    private bool hasSeenHelp = false;
+
     private FerrisWheel ferrisWheel;
     public FerrisWheel FerrisWheel => ferrisWheel;
 
@@ -13,9 +24,6 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
-        RoundManager.Instance.OnRoundFailed += OnRoundFailed;
-
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             RestartGame();
@@ -31,15 +39,17 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void OnRoundCompleted()
+    public void CompleteRound()
     {
         // Show completion dialog
         UIManager.Instance.ShowDialog(
-            "Day Complete!",
-            $"Great job! You completed Day {RoundManager.Instance.CurrentRound} with {RoundManager.Instance.CurrentScore:N0} points.",
+            "Excellent Work!",
+            roundCompletedDialogBody
+                .Replace("#SCORE#", $"{RoundManager.Instance.CurrentScore:N0}")
+                .Replace("#REQUIRED#", $"{RoundManager.Instance.RequiredScore:N0}"),
             "NEXT DAY",
             "",
-            500f,
+            550f,
             () =>
             {
                 // Proceed to next round after user clicks button
@@ -49,17 +59,19 @@ public class GameManager : Singleton<GameManager>
         );
     }
 
-    private void OnRoundFailed()
+    public void FailRound()
     {
         Debug.Log("Round failed");
 
         // Show failure dialog
         UIManager.Instance.ShowDialog(
-            "Day Failed",
-            $"You didn't reach the required score of {RoundManager.Instance.RequiredScore:N0} points. Try again!",
-            "RESTART",
+            "You're Fired!",
+            roundFailedDialogBody
+                .Replace("#SCORE#", $"{RoundManager.Instance.CurrentScore:N0}")
+                .Replace("#REQUIRED#", $"{RoundManager.Instance.RequiredScore:N0}"),
+            "TRY AGAIN",
             "",
-            500f,
+            550f,
             () =>
             {
                 // Restart the game after user clicks button
@@ -88,5 +100,18 @@ public class GameManager : Singleton<GameManager>
 
         ferrisWheelQueue.GenerateQueue();
         RoundManager.Instance.StartFirstRound();
+
+        Debug.Log("hasSeenHelp: " + hasSeenHelp);
+        if (!hasSeenHelp)
+        {
+            StartCoroutine(ShowHelpDialog());
+        }
+    }
+
+    public IEnumerator ShowHelpDialog()
+    {
+        yield return new WaitForSeconds(1f);
+        UIManager.Instance.ShowHelpDialog();
+        hasSeenHelp = true;
     }
 }
