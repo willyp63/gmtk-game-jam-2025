@@ -13,7 +13,6 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        RoundManager.Instance.OnRoundStarted += OnRoundStarted;
         RoundManager.Instance.OnRoundCompleted += OnRoundCompleted;
         RoundManager.Instance.OnRoundFailed += OnRoundFailed;
 
@@ -32,30 +31,41 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private void OnRoundStarted()
-    {
-        Debug.Log("Round started");
-    }
-
     private void OnRoundCompleted()
     {
-        Debug.Log("Round completed");
-
-        StartCoroutine(StartNextRoundAfterDelay());
-    }
-
-    private IEnumerator StartNextRoundAfterDelay()
-    {
-        yield return new WaitForSeconds(2f);
-
-        ferrisWheelQueue.GenerateQueue();
-        RoundManager.Instance.AdvanceToNextRound();
+        // Show completion dialog
+        UIManager.Instance.ShowDialog(
+            "Day Complete!",
+            $"Great job! You completed Day {RoundManager.Instance.CurrentRound} with {RoundManager.Instance.CurrentScore:N0} points.",
+            "NEXT DAY",
+            "",
+            500f,
+            () =>
+            {
+                // Proceed to next round after user clicks button
+                ferrisWheelQueue.GenerateQueue();
+                RoundManager.Instance.AdvanceToNextRound();
+            }
+        );
     }
 
     private void OnRoundFailed()
     {
         Debug.Log("Round failed");
-        RestartGame();
+
+        // Show failure dialog
+        UIManager.Instance.ShowDialog(
+            "Day Failed",
+            $"You didn't reach the required score of {RoundManager.Instance.RequiredScore:N0} points. Try again!",
+            "RESTART",
+            "",
+            500f,
+            () =>
+            {
+                // Restart the game after user clicks button
+                RestartGame();
+            }
+        );
     }
 
     public void RestartGame()

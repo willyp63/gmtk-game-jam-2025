@@ -32,6 +32,9 @@ public class UIManager : Singleton<UIManager>
     private Button menuButton;
 
     [SerializeField]
+    private Button helpButton;
+
+    [SerializeField]
     private GameObject pointsIndicatorPrefab;
 
     [SerializeField]
@@ -43,6 +46,33 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     private float pointsIndicatorXOffset = 0f;
 
+    [SerializeField]
+    private GameObject dialogPanel;
+
+    [SerializeField]
+    private TextMeshProUGUI dialogTitleText;
+
+    [SerializeField]
+    private TextMeshProUGUI dialogBodyText;
+
+    [SerializeField]
+    private TextMeshProUGUI dialogConfirmButtonText;
+
+    [SerializeField]
+    private TextMeshProUGUI dialogCancelButtonText;
+
+    [SerializeField]
+    private Button dialogConfirmButton;
+
+    [SerializeField]
+    private Button dialogCancelButton;
+
+    // Dialog callback delegate
+    public delegate void DialogCallback();
+
+    // Current dialog callback
+    private DialogCallback currentDialogCallback;
+
     private List<PointsIndicator> pointsIndicators = new List<PointsIndicator>();
 
     public void Initialize()
@@ -51,6 +81,7 @@ public class UIManager : Singleton<UIManager>
         InitializeRotateButtons();
         SubscribeToRoundManagerEvents();
         UpdateAllDisplays();
+        HideDialog();
     }
 
     private void SubscribeToRoundManagerEvents()
@@ -221,11 +252,38 @@ public class UIManager : Singleton<UIManager>
         {
             menuButton.onClick.AddListener(OnMenuButtonClicked);
         }
+
+        if (helpButton != null)
+        {
+            helpButton.onClick.AddListener(OnHelpButtonClicked);
+        }
+    }
+
+    private void OnHelpButtonClicked()
+    {
+        ShowDialog(
+            "Congratulations!",
+            "You've been hired to operate the Ferris Wheel here at Wacky Wharf!\n\nYour job is to load animals onto the wheel and rotate it to unload them at the other end. You'll earn points for each animal you unload, and you'll lose points for each animal you don't unload. You'll also lose energy for each skip you take. You can skip a cart by pressing the spacebar. You can end the day early by pressing the end day early button. You can rotate the wheel by pressing the rotate buttons. You can end the day by reaching the required score. You can restart the day by pressing the restart button. You can quit the game by pressing the menu button.",
+            "DISMISS",
+            "",
+            850f,
+            () => { }
+        );
     }
 
     private void OnMenuButtonClicked()
     {
-        SceneManager.LoadScene(0);
+        ShowDialog(
+            "Go to Main Menu?",
+            "You will lose all your progress and have to start over.",
+            "MAIN MENU",
+            "CANCEL",
+            500f,
+            () =>
+            {
+                SceneManager.LoadScene(0);
+            }
+        );
     }
 
     private void OnEndDayEarlyButtonClicked()
@@ -242,5 +300,81 @@ public class UIManager : Singleton<UIManager>
         {
             GameManager.Instance.FerrisWheel.RotateWheel(false, steps);
         }
+    }
+
+    public void ShowDialog(
+        string title,
+        string body,
+        string confirmButtonText,
+        string cancelButtonText,
+        float dialogHeight = 500f,
+        DialogCallback callback = null
+    )
+    {
+        if (dialogPanel != null)
+        {
+            // Set the dialog content
+            if (dialogTitleText != null)
+                dialogTitleText.text = title;
+
+            if (dialogBodyText != null)
+                dialogBodyText.text = body;
+
+            if (dialogConfirmButtonText != null)
+                dialogConfirmButtonText.text = confirmButtonText;
+
+            if (dialogCancelButtonText != null)
+                dialogCancelButtonText.text = cancelButtonText;
+
+            // Store the callback
+            currentDialogCallback = callback;
+
+            // Set up the button click listener
+            if (dialogConfirmButton != null)
+            {
+                dialogConfirmButton.onClick.RemoveAllListeners();
+                dialogConfirmButton.onClick.AddListener(OnDialogButtonClicked);
+                dialogConfirmButton.gameObject.SetActive(confirmButtonText != "");
+            }
+
+            if (dialogCancelButton != null)
+            {
+                dialogCancelButton.onClick.RemoveAllListeners();
+                dialogCancelButton.onClick.AddListener(HideDialog);
+                dialogCancelButton.gameObject.SetActive(cancelButtonText != "");
+            }
+
+            // Show the dialog
+            dialogPanel.GetComponent<RectTransform>().sizeDelta = new Vector2(
+                dialogPanel.GetComponent<RectTransform>().sizeDelta.x,
+                dialogHeight
+            );
+            dialogPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("UIManager: Dialog panel is not assigned!");
+        }
+    }
+
+    public void HideDialog()
+    {
+        if (dialogPanel != null)
+        {
+            dialogPanel.SetActive(false);
+            currentDialogCallback = null;
+        }
+    }
+
+    private void OnDialogButtonClicked()
+    {
+        // Invoke the callback if one was provided
+        if (currentDialogCallback != null)
+        {
+            currentDialogCallback.Invoke();
+        }
+
+        // Hide the dialog
+        HideDialog();
     }
 }

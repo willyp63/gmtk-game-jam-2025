@@ -105,13 +105,6 @@ public class FerrisWheel : MonoBehaviour
 
     private void CreateCartsAndHinges()
     {
-        // Define 5 distinct colors for the carts
-        Color[] cartColors = new Color[]
-        {
-            new Color(147f / 255f, 9f / 255f, 36f / 255f),
-            new Color(254f / 255f, 149f / 255f, 7f / 255f),
-        };
-
         for (int i = 0; i < numberOfCarts; i++)
         {
             // Calculate position for this cart
@@ -141,9 +134,6 @@ public class FerrisWheel : MonoBehaviour
 
             // Initialize cart with hinge
             cart.Initialize(hinge);
-
-            // Assign color to cart
-            // cart.SetColor(cartColors[i % cartColors.Length]);
 
             // Add to carts list
             carts.Add(cart);

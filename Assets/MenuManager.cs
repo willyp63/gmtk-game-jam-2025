@@ -6,14 +6,27 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField]
-    private Button startButton;
+    private Button startNormalButton;
+
+    [SerializeField]
+    private Button startExpertButton;
+
+    [SerializeField]
+    private Button exitButton;
 
     private void Start()
     {
-        startButton.onClick.AddListener(StartGame);
+        startNormalButton.onClick.AddListener(StartNormalGame);
+        startExpertButton.onClick.AddListener(StartExpertGame);
+        exitButton.onClick.AddListener(ExitGame);
     }
 
-    public void StartGame()
+    private void StartExpertGame()
+    {
+        Debug.Log("Start Expert Game");
+    }
+
+    private void StartNormalGame()
     {
         // Subscribe to scene loaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -28,5 +41,10 @@ public class MenuManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
         GameManager.Instance.RestartGame();
+    }
+
+    private void ExitGame()
+    {
+        Application.Quit();
     }
 }
