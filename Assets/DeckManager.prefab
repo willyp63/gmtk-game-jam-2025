@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4094751653550773572
 MonoBehaviour:
@@ -71,17 +71,17 @@ MonoBehaviour:
     rarity: 2
   - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
     rarity: 2
-  modifierOptions:
-  - modifier: 0
-    weight: 1
-  - modifier: 1
-    weight: 0.1
-  - modifier: 2
-    weight: 0.1
-  - modifier: 3
-    weight: 0.1
-  - modifier: 4
-    weight: 0.1
-  commonWeight: 5
+  invalidAnimals:
+  - animalData: {fileID: 11400000, guid: 0fd15dfd9252f334ba5e188ab0aae2ac, type: 2}
+    modifier: 4
+  - animalData: {fileID: 11400000, guid: eed5aee37648db147ba907ebaab945c9, type: 2}
+    modifier: 4
+  - animalData: {fileID: 11400000, guid: afeb5b69578f4a446850058ceb6a5c2e, type: 2}
+    modifier: 4
+  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    modifier: 3
+  - animalData: {fileID: 11400000, guid: c426271955ff2ae489abf13b3c8c3430, type: 2}
+    modifier: 1
+  commonWeight: 8
   uncommonWeight: 3
   rareWeight: 1

@@ -116,7 +116,8 @@ public class DeckManager : Singleton<DeckManager>
 
             if (
                 invalidAnimals.Any(a =>
-                    a.animalData == selectedAnimalData && a.modifier == selectedModifier
+                    a.animalData.animalName == selectedAnimalData.animalName
+                    && a.modifier == selectedModifier
                 )
             )
             {

@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3851845397462385580
 MonoBehaviour:
@@ -45,20 +45,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  roundCompletedDialogBody: '<size=32><b>You scored #SCORE# points!</b></size>
+  roundCompletedDialogBody: '<size=32><b>You scored <color=#B42FF7>#SCORE#</color>
+    points!</b></size>
 
-    <size=28>(Required:
-    #REQUIRED#)</size>
-
-
-    The animals are raving about your ferris wheel skills!
-    Management is impressed with your performance.'
-  roundFailedDialogBody: '<size=32><b>You only scored #SCORE# points</b></size>
-
-    <size=28>(Required:
-    #REQUIRED#)</size>
+    <size=28>(Required: #REQUIRED#)</size>
 
 
-    The animals are filing complaints, management is furious,
-    and your ferris wheel operator license has been revoked!'
+    The animals
+    are raving about your ferris wheel skills! Management is impressed with your
+    performance.'
+  roundFailedDialogBody: '<size=32><b>You only scored <color=#B42FF7>#SCORE#</color>
+    points</b></size>
+
+    <size=28>(Required: #REQUIRED#)</size>
+
+
+    The animals
+    are filing complaints, management is furious, and your ferris wheel operator
+    license has been revoked!'
   hasSeenHelp: 0
