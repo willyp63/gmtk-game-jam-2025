@@ -170,9 +170,9 @@ public class FerrisWheel : MonoBehaviour
             {
                 foreach (var light in cart.CartLights)
                 {
-                    light.intensity *= 0.33f;
+                    light.intensity *= 0.5f;
                 }
-                cart.MainLight.intensity = 0f;
+                cart.MainLight.intensity *= 0.25f;
             }
         }
 
