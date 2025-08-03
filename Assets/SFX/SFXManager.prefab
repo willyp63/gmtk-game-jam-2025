@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1279977133339791456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 686748478778106291}
+  - component: {fileID: 4696302138314822616}
+  m_Layer: 0
+  m_Name: SFXManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &686748478778106291
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279977133339791456}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4696302138314822616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279977133339791456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12abd268dffa384a9143d9e52f739ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  sfxSource: {fileID: 0}
+  sfxSource2: {fileID: 0}
+  sfxSource3: {fileID: 0}
+  durationSFXSource: {fileID: 0}
+  musicSource: {fileID: 0}
+  audioClips:
+  - {fileID: 8300000, guid: 96f9c7464066850429ffa01de920cfba, type: 3}
+  - {fileID: 8300000, guid: 1c195851d3b9a5744a92ba3420fe8586, type: 3}
+  - {fileID: 8300000, guid: 90bb137e5248a024187ae55052db0960, type: 3}
+  - {fileID: 8300000, guid: f8b1aa0ac5baa304d903d80aef7d755e, type: 3}
+  - {fileID: 8300000, guid: 678b7d294e790c143acd3d264bb84a1f, type: 3}
+  - {fileID: 8300000, guid: 89b2b4e222d47d24eb354704aac98e27, type: 3}
+  - {fileID: 8300000, guid: 64f8a5b48b8a63240aed4f1bbeee171a, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: d5e2e6f7ccdfe3b4b99ba0f37ea7c938, type: 3}
+  sfxVolume: 0.1
+  musicVolume: 0.005

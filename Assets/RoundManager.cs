@@ -118,17 +118,25 @@ public class RoundManager : Singleton<RoundManager>
 
     private void OnWheelStopped()
     {
-        Debug.Log("OnWheelStopped");
+        StartCoroutine(CheckIfRoundIsCompleteAfterDelay());
+    }
+
+    private IEnumerator CheckIfRoundIsCompleteAfterDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+
         if (currentEnergy <= 0)
         {
             if (IsRoundComplete)
             {
                 Debug.Log("OnRoundCompleted");
+                SFXManager.Instance.PlaySFX("success");
                 GameManager.Instance.CompleteRound();
             }
             else
             {
                 Debug.Log("OnRoundFailed");
+                SFXManager.Instance.PlaySFX("fail");
                 GameManager.Instance.FailRound();
             }
         }

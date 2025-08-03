@@ -65,6 +65,8 @@ public class FerrisWheel : MonoBehaviour
     [SerializeField]
     private float menuWheelModifierChance = 0.5f;
 
+    private AudioSource audioSource;
+    private AudioSource spinAudioSource;
     private float rotationAngle = 45f;
 
     private int topCartIndex = 0;
@@ -80,6 +82,9 @@ public class FerrisWheel : MonoBehaviour
 
     private void Awake()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        spinAudioSource = gameObject.AddComponent<AudioSource>();
+
         if (isMenuWheel)
         {
             Initialize();
@@ -193,6 +198,9 @@ public class FerrisWheel : MonoBehaviour
 
             animal.SetDragable(false);
             animal.ApplyEffects(AnimalEffectTrigger.OnLoad);
+
+            // Play loadSFX
+            SFXManager.Instance.PlaySFX("soft_bounce");
         }
     }
 
@@ -245,6 +253,9 @@ public class FerrisWheel : MonoBehaviour
             cart.SetOpen(false);
         }
 
+        // Play cartCloseSFX
+        SFXManager.Instance.PlaySFX("door_close");
+
         float angle = (isClockwise ? -rotationAngle : rotationAngle) * steps;
         float targetAngle = transform.rotation.eulerAngles.z + angle;
 
@@ -252,6 +263,9 @@ public class FerrisWheel : MonoBehaviour
         float elapsedTime = 0f;
         float duration = GetRotationDuration(steps);
         int currentStep = 1;
+
+        // Play spinSFX while rotating
+        SFXManager.Instance.PlaySFXForDuration("wheel_spin", duration);
 
         while (elapsedTime < duration)
         {
@@ -313,6 +327,10 @@ public class FerrisWheel : MonoBehaviour
         // Unload animal in bottom cart
         Cart bottomCart = GetBottomCart();
         bottomCart.SetOpen(true);
+
+        // Play cartOpenSFX
+        SFXManager.Instance.PlaySFX("door_open");
+
         if (!bottomCart.IsEmpty)
         {
             Animal animal = bottomCart.CurrentAnimal;
@@ -328,6 +346,9 @@ public class FerrisWheel : MonoBehaviour
                 FloatingTextManager.pointsColor,
                 1.5f
             );
+
+            // Play loadSFX for unloading
+            SFXManager.Instance.PlaySFX("soft_bounce", 1);
 
             // Move the animal to the unloading location, then animate it moving to the right 10 units, then destroy it
             StartCoroutine(AnimateAnimalUnloading(animal));

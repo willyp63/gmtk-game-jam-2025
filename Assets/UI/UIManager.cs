@@ -74,6 +74,9 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     private Button dialogCancelButton;
 
+    [SerializeField]
+    private GameObject skipZoneIndicator;
+
     // Dialog callback delegate
     public delegate void DialogCallback();
 
@@ -90,6 +93,7 @@ public class UIManager : Singleton<UIManager>
         UpdateAllDisplays();
         UpdateButtonStates();
         HideDialog();
+        ShowSkipZoneIndicator(false);
     }
 
     private void SubscribeToRoundManagerEvents()
@@ -297,11 +301,26 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowHelpDialog()
     {
-        ShowDialog(helpTitle, helpText, "DISMISS", "", 950f, () => { });
+        SFXManager.Instance.PlaySFX("button_click");
+
+        ShowSkipZoneIndicator(true);
+        ShowDialog(
+            helpTitle,
+            helpText,
+            "DISMISS",
+            "",
+            950f,
+            () =>
+            {
+                ShowSkipZoneIndicator(false);
+            }
+        );
     }
 
     private void OnMenuButtonClicked()
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         ShowDialog(
             "Main Menu?",
             "You will lose all your progress and have to start over.",
@@ -317,6 +336,8 @@ public class UIManager : Singleton<UIManager>
 
     private void OnEndDayEarlyButtonClicked()
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         if (GameManager.Instance.FerrisWheel != null)
         {
             GameManager.Instance.FerrisWheel.EndDayEarly();
@@ -325,6 +346,8 @@ public class UIManager : Singleton<UIManager>
 
     private void OnRotateButtonClicked(int steps)
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         if (GameManager.Instance.FerrisWheel != null)
         {
             GameManager.Instance.FerrisWheel.RotateWheel(false, steps);
@@ -369,7 +392,7 @@ public class UIManager : Singleton<UIManager>
             if (dialogCancelButton != null)
             {
                 dialogCancelButton.onClick.RemoveAllListeners();
-                dialogCancelButton.onClick.AddListener(HideDialog);
+                dialogCancelButton.onClick.AddListener(OnDialogCancelButtonClicked);
                 dialogCancelButton.gameObject.SetActive(cancelButtonText != "");
             }
 
@@ -395,8 +418,21 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    public void ShowSkipZoneIndicator(bool show)
+    {
+        skipZoneIndicator.SetActive(show);
+    }
+
+    private void OnDialogCancelButtonClicked()
+    {
+        SFXManager.Instance.PlaySFX("button_click");
+        HideDialog();
+    }
+
     private void OnDialogButtonClicked()
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         // Invoke the callback if one was provided
         if (currentDialogCallback != null)
         {

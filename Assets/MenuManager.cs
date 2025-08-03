@@ -9,25 +9,18 @@ public class MenuManager : MonoBehaviour
     private Button startNormalButton;
 
     [SerializeField]
-    private Button startExpertButton;
-
-    [SerializeField]
     private Button exitButton;
 
     private void Start()
     {
         startNormalButton.onClick.AddListener(StartNormalGame);
-        startExpertButton.onClick.AddListener(StartExpertGame);
         exitButton.onClick.AddListener(ExitGame);
-    }
-
-    private void StartExpertGame()
-    {
-        Debug.Log("Start Expert Game");
     }
 
     private void StartNormalGame()
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         // Subscribe to scene loaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
 
@@ -45,6 +38,8 @@ public class MenuManager : MonoBehaviour
 
     private void ExitGame()
     {
+        SFXManager.Instance.PlaySFX("button_click");
+
         Application.Quit();
     }
 }

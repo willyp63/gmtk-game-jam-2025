@@ -174,6 +174,8 @@ public class FerrisWheelQueue : MonoBehaviour
 
     public void SkipAnimal(Animal animal, Vector3 dragToPosition)
     {
+        SFXManager.Instance.PlaySFX("soft_bounce", 0);
+
         // Find the animal in our queue
         int animalIndex = queueAnimals.IndexOf(animal);
         if (animalIndex == -1)
