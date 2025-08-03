@@ -127,7 +127,6 @@ public class MarqueeSign : MonoBehaviour
                 continue;
 
             float intensity = CalculateIntensity(i);
-            Debug.Log($"MarqueeLights: Light {i} intensity: {intensity}");
             lights[i].intensity = intensity;
 
             if (animateColor && colorSequence.Length > 0)

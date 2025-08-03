@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1063075881065407994
 MonoBehaviour:
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  requiredScores: 0a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a0000000a000000
+  requiredScores: c80000002c01000090010000f401000058020000bc0200002003000084030000
   energyPerDay: 12
   energyIncreasePerRound: 3
   skipsPerRound: 4

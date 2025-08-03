@@ -189,7 +189,7 @@ Material:
     - _OutlineTexXSpeed: 10
     - _OutlineTexYSpeed: 0
     - _OutlineWidth: 0.01
-    - _OverlayBlend: 0.081
+    - _OverlayBlend: 0.025
     - _OverlayGlow: 1
     - _OverlayTextureScrollXSpeed: 0.01
     - _OverlayTextureScrollYSpeed: -0.02
