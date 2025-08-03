@@ -709,7 +709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.99607843, g: 0.58431375, b: 0.02745098, a: 1}
+  m_Color: {r: 0.5764706, g: 0.03529412, b: 0.14117648, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2574,8 +2574,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cycleDuration: 60
-  saturation: 0.6
-  lightness: 0.2
+  saturation: 0.5
+  lightness: 0.15
   startHue: 0.5
 --- !u!1001 &302550106
 PrefabInstance:
