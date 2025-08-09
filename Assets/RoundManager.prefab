@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  requiredScores: c80000002c01000090010000f401000058020000bc0200002003000084030000
+  requiredScores: c80000002c010000c20100008a02000084030000e2040000d6060000c4090000a00f00007017000028230000983a0000a861000040420f00
   energyPerDay: 12
   energyIncreasePerRound: 3
   skipsPerRound: 4

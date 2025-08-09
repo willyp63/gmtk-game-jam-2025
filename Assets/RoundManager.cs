@@ -123,22 +123,22 @@ public class RoundManager : Singleton<RoundManager>
 
     private IEnumerator CheckIfRoundIsCompleteAfterDelay()
     {
-        yield return new WaitForSeconds(0.3f);
+        if (currentEnergy > 0)
+            yield break;
 
-        if (currentEnergy <= 0)
+        yield return new WaitForSeconds(0.5f);
+
+        if (IsRoundComplete)
         {
-            if (IsRoundComplete)
-            {
-                Debug.Log("OnRoundCompleted");
-                SFXManager.Instance.PlaySFX("success");
-                GameManager.Instance.CompleteRound();
-            }
-            else
-            {
-                Debug.Log("OnRoundFailed");
-                SFXManager.Instance.PlaySFX("fail");
-                GameManager.Instance.FailRound();
-            }
+            Debug.Log("OnRoundCompleted");
+            SFXManager.Instance.PlaySFX("success");
+            GameManager.Instance.CompleteRound();
+        }
+        else
+        {
+            Debug.Log("OnRoundFailed");
+            SFXManager.Instance.PlaySFX("fail");
+            GameManager.Instance.FailRound();
         }
     }
 

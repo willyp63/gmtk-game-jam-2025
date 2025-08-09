@@ -35,6 +35,12 @@ public class UIManager : Singleton<UIManager>
     private Button helpButton;
 
     [SerializeField]
+    private Button musicToggleButton;
+
+    [SerializeField]
+    private TextMeshProUGUI musicToggleButtonText;
+
+    [SerializeField]
     private string helpTitle = "Welcome to Wacky Wharf!";
 
     [SerializeField]
@@ -85,8 +91,15 @@ public class UIManager : Singleton<UIManager>
 
     private List<PointsIndicator> pointsIndicators = new List<PointsIndicator>();
 
+    private bool isInitialized = false;
+
     public void Initialize()
     {
+        if (isInitialized)
+            return;
+
+        isInitialized = true;
+
         InitializePointsIndicators();
         InitializeRotateButtons();
         SubscribeToRoundManagerEvents();
@@ -297,6 +310,20 @@ public class UIManager : Singleton<UIManager>
         {
             helpButton.onClick.AddListener(ShowHelpDialog);
         }
+
+        if (musicToggleButton != null)
+        {
+            musicToggleButton.onClick.AddListener(OnMusicToggleButtonClicked);
+            musicToggleButtonText.text = SFXManager.Instance.IsMusicMuted ? "ON" : "OFF";
+        }
+    }
+
+    private void OnMusicToggleButtonClicked()
+    {
+        Debug.Log("OnMusicToggleButtonClicked");
+        SFXManager.Instance.PlaySFX("button_click");
+        SFXManager.Instance.ToggleMusic();
+        musicToggleButtonText.text = SFXManager.Instance.IsMusicMuted ? "ON" : "OFF";
     }
 
     public void ShowHelpDialog()

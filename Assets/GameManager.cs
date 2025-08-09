@@ -99,8 +99,8 @@ public class GameManager : Singleton<GameManager>
         UIManager.Instance.Initialize();
         RoundManager.Instance.Initialize();
 
-        ferrisWheelQueue.GenerateQueue();
         RoundManager.Instance.StartFirstRound();
+        ferrisWheelQueue.GenerateQueue();
 
         Debug.Log("hasSeenHelp: " + hasSeenHelp);
         if (!hasSeenHelp)

@@ -56,7 +56,73 @@ MonoBehaviour:
   - {fileID: 0}
   endDayEarlyButton: {fileID: 0}
   menuButton: {fileID: 0}
-  pointsIndicatorPrefab: {fileID: 7328278271503827222, guid: a2ce5709a485c9d44b47d52315bcbf07, type: 3}
+  helpButton: {fileID: 0}
+  musicToggleButton: {fileID: 0}
+  musicToggleButtonText: {fileID: 0}
+  helpTitle: Welcome!
+  helpText: '<size=32><b>Congrats on your new position as Wheel Operator!</b></size>
+
+    Load
+    animals onto the wheel, let them accumulate points while riding, then unload
+    them to collect those points. Meet your daily point target to keep your job!
+
+
+    <size=32><b>Queue
+    Management</b></size>
+
+    You see the next 3 animals waiting in line:
+
+    -
+    <b>Load:</b> Drag any animal to the bottom cart (when empty)
+
+    - <b>Skip:</b>
+    Drag any animal to the right of the wheel (uses one daily skip)
+
+    - When an
+    animal leaves, the queue advances and a new animal appears
+
+
+    <size=32><b>Wheel
+    Operation</b></size>
+
+    Rotate the wheel 1, 2, or 3 steps using the buttons
+    or number keys. Each rotation uses your limited daily steps and advances time.
+
+
+    <size=32><b>Points
+    & Progression</b></size>
+
+    - Animals in the bottom cart unload automatically
+    when the wheel stops, giving you their accumulated points
+
+    - Animals have
+    base points and special abilities (hover to see details)
+
+    - Animals left
+    on the wheel at day''s end subtract their points from your score
+
+    - Meet
+    the daily point target to advance; fail and you''re fired
+
+    - Each new day
+    has higher targets, more rotation steps, and more skips
+
+
+    <b>You can view
+    this letter at any time by pressing the help button.</b>
+
+
+    <i>Good luck at
+    Wacky Wharf!</i>'
+  pointsIndicatorPrefab: {fileID: 1492065121928637256, guid: a2ce5709a485c9d44b47d52315bcbf07, type: 3}
   worldSpaceCanvas: {fileID: 0}
   pointsIndicatorYOffset: 0
   pointsIndicatorXOffset: 0.5
+  dialogPanel: {fileID: 0}
+  dialogTitleText: {fileID: 0}
+  dialogBodyText: {fileID: 0}
+  dialogConfirmButtonText: {fileID: 0}
+  dialogCancelButtonText: {fileID: 0}
+  dialogConfirmButton: {fileID: 0}
+  dialogCancelButton: {fileID: 0}
+  skipZoneIndicator: {fileID: 0}

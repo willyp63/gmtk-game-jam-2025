@@ -34,6 +34,10 @@ public class SFXManager : Singleton<SFXManager>
     [SerializeField]
     private float musicVolume = 1f;
 
+    private bool isMusicMuted = false;
+
+    public bool IsMusicMuted => isMusicMuted;
+
     private Dictionary<string, AudioClip> clipDictionary = new Dictionary<string, AudioClip>();
 
     void Start()
@@ -134,5 +138,12 @@ public class SFXManager : Singleton<SFXManager>
         musicSource.clip = clip;
         musicSource.volume = musicVolume;
         musicSource.Play();
+    }
+
+    public void ToggleMusic()
+    {
+        Debug.Log("ToggleMusic" + isMusicMuted);
+        isMusicMuted = !isMusicMuted;
+        musicSource.mute = isMusicMuted;
     }
 }
