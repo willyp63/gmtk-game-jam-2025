@@ -3,32 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public enum Rarity
+public class AnimalManager : Singleton<AnimalManager>
 {
-    Common,
-    Uncommon,
-    Rare,
-}
-
-[System.Serializable]
-public class AnimalWithModifier
-{
-    public AnimalData animalData;
-    public AnimalModifier modifier;
-}
-
-[System.Serializable]
-public class AnimalOption
-{
-    public AnimalData animalData;
-    public Rarity rarity;
-}
-
-public class DeckManager : Singleton<DeckManager>
-{
-    [SerializeField]
-    private List<AnimalWithModifier> testAnimals = new();
-
     [SerializeField]
     private List<AnimalOption> animalOptions = new();
 
@@ -44,51 +20,17 @@ public class DeckManager : Singleton<DeckManager>
     [SerializeField]
     private float rareWeight = 1;
 
-    // Queue to store animals in order of priority
-    private Queue<DeckAnimal> animalQueue = new Queue<DeckAnimal>();
-    private bool isInitialized = false;
-
-    private void InitializeQueue()
-    {
-        foreach (var testAnimal in testAnimals)
-        {
-            if (testAnimal.animalData != null)
-            {
-                DeckAnimal deckAnimal = new DeckAnimal(testAnimal.animalData, testAnimal.modifier);
-                animalQueue.Enqueue(deckAnimal);
-            }
-        }
-
-        isInitialized = true;
-    }
-
-    public List<DeckAnimal> DequeueAnimals(
+    public List<DeckAnimal> GetRandomAnimals(
         int count,
         float modifierChance,
         List<Rarity> allowedRarities = null
     )
     {
-        if (!isInitialized)
-            InitializeQueue();
-
-        List<DeckAnimal> result = new List<DeckAnimal>();
+        var result = new List<DeckAnimal>();
 
         for (int i = 0; i < count; i++)
         {
-            // If queue is empty, generate a random animal
-            if (animalQueue.Count == 0)
-            {
-                DeckAnimal randomAnimal = GenerateRandomAnimal(modifierChance, allowedRarities);
-                if (randomAnimal != null)
-                {
-                    result.Add(randomAnimal);
-                }
-            }
-            else
-            {
-                // Dequeue the next animal from the queue
-                result.Add(animalQueue.Dequeue());
-            }
+            result.Add(GenerateRandomAnimal(modifierChance, allowedRarities));
         }
 
         return result;

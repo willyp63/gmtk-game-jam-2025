@@ -53,6 +53,7 @@ public class GameManager : Singleton<GameManager>
             () =>
             {
                 // Proceed to next round after user clicks button
+                DeckManager.Instance.GenerateNewRoundQueue();
                 ferrisWheelQueue.GenerateQueue();
                 RoundManager.Instance.AdvanceToNextRound();
             }
@@ -100,6 +101,7 @@ public class GameManager : Singleton<GameManager>
         RoundManager.Instance.Initialize();
 
         RoundManager.Instance.StartFirstRound();
+        DeckManager.Instance.GenerateNewRoundQueue();
         ferrisWheelQueue.GenerateQueue();
 
         Debug.Log("hasSeenHelp: " + hasSeenHelp);

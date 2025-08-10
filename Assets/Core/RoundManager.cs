@@ -50,6 +50,7 @@ public class RoundManager : Singleton<RoundManager>
     private float modifierChance = 0f;
     private List<Rarity> allowedRarities = new List<Rarity> { Rarity.Common };
     private bool lightsAreOn = false;
+    private bool isDayEnded = false;
 
     // Events
     public event Action OnScoreChanged;
@@ -63,6 +64,7 @@ public class RoundManager : Singleton<RoundManager>
     public int CurrentScore => currentScore;
     public int RequiredScore => requiredScore;
     public int EnergyPerDay => energyPerDay;
+    public int MaxEnergy => maxEnergy;
     public int SkipsPerRound => skipsPerRound;
     public int CurrentSkipsUsed => currentSkipsUsed;
     public int SkipsRemaining => maxSkips - currentSkipsUsed;
@@ -123,8 +125,10 @@ public class RoundManager : Singleton<RoundManager>
 
     private IEnumerator CheckIfRoundIsCompleteAfterDelay()
     {
-        if (currentEnergy > 0)
+        if (currentEnergy > 0 || isDayEnded)
             yield break;
+
+        isDayEnded = true;
 
         yield return new WaitForSeconds(0.5f);
 
@@ -140,6 +144,8 @@ public class RoundManager : Singleton<RoundManager>
             SFXManager.Instance.PlaySFX("fail");
             GameManager.Instance.FailRound();
         }
+
+        isDayEnded = false;
     }
 
     private void ResetRound(bool isFirstRound = false)

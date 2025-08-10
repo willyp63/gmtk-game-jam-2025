@@ -30,11 +30,9 @@ public class FerrisWheelQueue : MonoBehaviour
         // Clear existing queue
         ClearQueue();
 
-        // Get animals from the deck manager
-        List<DeckAnimal> deckAnimalList = DeckManager.Instance.DequeueAnimals(
-            animalPositions.Count,
-            RoundManager.Instance.ModifierChance,
-            RoundManager.Instance.AllowedRarities
+        // Get animals from the current round queue instead of generating random ones
+        List<DeckAnimal> deckAnimalList = DeckManager.Instance.GetNextAnimals(
+            animalPositions.Count
         );
 
         // Start the animation coroutine
@@ -52,7 +50,7 @@ public class FerrisWheelQueue : MonoBehaviour
             Animal newAnimal = CreateAnimalInQueue(deckAnimalList[i], i);
 
             // Set initial position off-screen to the left
-            Vector3 initialPosition = animalPositions[i].position - Vector3.right * distance;
+            Vector3 initialPosition = animalPositions[i].position - Vector3.left * distance;
             newAnimal.transform.position = initialPosition;
             newAnimal.SetIsMoving(true);
         }
@@ -73,7 +71,7 @@ public class FerrisWheelQueue : MonoBehaviour
             for (int i = 0; i < queueAnimals.Count && i < animalPositions.Count; i++)
             {
                 Animal animal = queueAnimals[i];
-                Vector3 startPosition = animalPositions[i].position - Vector3.right * distance;
+                Vector3 startPosition = animalPositions[i].position - Vector3.left * distance;
                 Vector3 targetPosition = animalPositions[i].position;
 
                 animal.transform.position = Vector3.Lerp(
@@ -226,7 +224,7 @@ public class FerrisWheelQueue : MonoBehaviour
 
         animal.SetIsMoving(true);
 
-        Vector3 targetPosition = animal.transform.position + Vector3.right * 12f;
+        Vector3 targetPosition = animal.transform.position + Vector3.left * 12f;
 
         // Animate animal to the target position
         float moveToPositionDuration = 1.0f;
@@ -247,7 +245,7 @@ public class FerrisWheelQueue : MonoBehaviour
         animal.transform.position = targetPosition;
 
         // Animate animal moving to the right 12 units (same as unloading)
-        Vector3 finalPosition = targetPosition + Vector3.right * 12f;
+        Vector3 finalPosition = targetPosition + Vector3.left * 12f;
         float moveRightDuration = 2.0f;
         elapsedTime = 0f;
 
@@ -271,11 +269,7 @@ public class FerrisWheelQueue : MonoBehaviour
         float elapsedTime = 0f;
 
         // Create new animal off-screen first
-        List<DeckAnimal> newDeckAnimal = DeckManager.Instance.DequeueAnimals(
-            1,
-            RoundManager.Instance.ModifierChance,
-            RoundManager.Instance.AllowedRarities
-        );
+        List<DeckAnimal> newDeckAnimal = DeckManager.Instance.GetNextAnimals(1);
         if (newDeckAnimal.Count > 0)
         {
             CreateAnimalInQueue(newDeckAnimal[0], animalPositions.Count);

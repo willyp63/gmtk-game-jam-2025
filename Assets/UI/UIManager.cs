@@ -20,7 +20,7 @@ public class UIManager : Singleton<UIManager>
     private TextMeshProUGUI energyText;
 
     [SerializeField]
-    private TextMeshProUGUI skipsText;
+    private Image energyBar;
 
     [SerializeField]
     private List<Button> rotateButtons;
@@ -80,9 +80,6 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     private Button dialogCancelButton;
 
-    [SerializeField]
-    private GameObject skipZoneIndicator;
-
     // Dialog callback delegate
     public delegate void DialogCallback();
 
@@ -106,7 +103,6 @@ public class UIManager : Singleton<UIManager>
         UpdateAllDisplays();
         UpdateButtonStates();
         HideDialog();
-        ShowSkipZoneIndicator(false);
     }
 
     private void SubscribeToRoundManagerEvents()
@@ -153,16 +149,20 @@ public class UIManager : Singleton<UIManager>
     {
         if (energyText != null)
         {
-            energyText.text = $"{RoundManager.Instance.CurrentEnergy}";
+            energyText.text =
+                $"{RoundManager.Instance.CurrentEnergy} / {RoundManager.Instance.MaxEnergy}";
+        }
+
+        if (energyBar != null)
+        {
+            energyBar.fillAmount =
+                (float)RoundManager.Instance.CurrentEnergy / RoundManager.Instance.MaxEnergy;
         }
     }
 
     private void UpdateSkipsDisplay()
     {
-        if (skipsText != null)
-        {
-            skipsText.text = $"{RoundManager.Instance.SkipsRemaining}";
-        }
+        // TODO: do we need skips display?
     }
 
     private void UpdateButtonStates()
@@ -330,18 +330,7 @@ public class UIManager : Singleton<UIManager>
     {
         SFXManager.Instance.PlaySFX("button_click");
 
-        ShowSkipZoneIndicator(true);
-        ShowDialog(
-            helpTitle,
-            helpText,
-            "DISMISS",
-            "",
-            950f,
-            () =>
-            {
-                ShowSkipZoneIndicator(false);
-            }
-        );
+        ShowDialog(helpTitle, helpText, "DISMISS", "", 950f, () => { });
     }
 
     private void OnMenuButtonClicked()
@@ -377,7 +366,7 @@ public class UIManager : Singleton<UIManager>
 
         if (GameManager.Instance.FerrisWheel != null)
         {
-            GameManager.Instance.FerrisWheel.RotateWheel(false, steps);
+            GameManager.Instance.FerrisWheel.RotateWheel(true, steps);
         }
     }
 
@@ -443,11 +432,6 @@ public class UIManager : Singleton<UIManager>
             dialogPanel.SetActive(false);
             currentDialogCallback = null;
         }
-    }
-
-    public void ShowSkipZoneIndicator(bool show)
-    {
-        skipZoneIndicator.SetActive(show);
     }
 
     private void OnDialogCancelButtonClicked()

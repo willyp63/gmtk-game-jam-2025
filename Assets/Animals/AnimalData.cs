@@ -63,6 +63,13 @@ public class AnimalEffectData
     }
 }
 
+[System.Serializable]
+public class AnimalWithModifier
+{
+    public AnimalData animalData;
+    public AnimalModifier modifier;
+}
+
 [CreateAssetMenu(fileName = "New Animal", menuName = "Ferris Wheel/Animal")]
 public class AnimalData : ScriptableObject
 {

@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
+  starterDecks:
+  - {fileID: 11400000, guid: 058df976a09db5846ab63d23e17bfb80, type: 2}
+  - {fileID: 11400000, guid: 4b6b202aaa67cb346a4822488b306437, type: 2}
   testAnimals: []
   animalOptions:
   - animalData: {fileID: 11400000, guid: fb81ee9da43cb9d4fba9557c9629abb8, type: 2}

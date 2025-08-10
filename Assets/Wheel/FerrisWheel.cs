@@ -354,12 +354,6 @@ public class FerrisWheel : MonoBehaviour
             StartCoroutine(AnimateAnimalUnloading(animal));
         }
 
-        // If the round is over, apply the OnDayEnd effect to all animals and subtract points
-        if (RoundManager.Instance.CurrentEnergy <= 0)
-        {
-            SubtractPointsFromAnimals();
-        }
-
         isRotating = false;
         OnWheelStopped?.Invoke();
     }
@@ -368,31 +362,7 @@ public class FerrisWheel : MonoBehaviour
     {
         RoundManager.Instance.ConsumeEnergy(RoundManager.Instance.CurrentEnergy);
 
-        SubtractPointsFromAnimals();
-
         OnWheelStopped?.Invoke();
-    }
-
-    private void SubtractPointsFromAnimals()
-    {
-        foreach (Cart cart in carts)
-        {
-            if (!cart.IsEmpty)
-            {
-                Animal animal = cart.CurrentAnimal;
-                animal.ApplyEffects(AnimalEffectTrigger.OnDayEnd);
-
-                int negativePoints = -animal.CurrentPoints;
-                RoundManager.Instance.AddScore(negativePoints);
-
-                FloatingTextManager.Instance.SpawnText(
-                    negativePoints > 0 ? $"+{negativePoints}" : $"{negativePoints}",
-                    animal.transform.position,
-                    FloatingTextManager.pointsColor,
-                    1.5f
-                );
-            }
-        }
     }
 
     // Smooth easing function for gradual acceleration and deceleration
@@ -418,7 +388,7 @@ public class FerrisWheel : MonoBehaviour
         animal.transform.rotation = Quaternion.identity;
 
         // Animate animal moving to the right 12 units
-        Vector3 finalPosition = unloadingLocation.position + Vector3.right * 12f;
+        Vector3 finalPosition = unloadingLocation.position + Vector3.left * 12f;
         float moveRightDuration = 2.0f;
         float elapsedTime = 0f;
 
@@ -476,7 +446,7 @@ public class FerrisWheel : MonoBehaviour
         GetBottomCart().SetOpen(false);
 
         // Load all carts with random animals (use DeckManager.DequeueAnimals to get the animals)
-        List<DeckAnimal> initialAnimals = DeckManager.Instance.DequeueAnimals(
+        List<DeckAnimal> initialAnimals = AnimalManager.Instance.GetRandomAnimals(
             numberOfCarts,
             menuWheelModifierChance
         );
@@ -531,7 +501,7 @@ public class FerrisWheel : MonoBehaviour
                 }
 
                 // Load new random animal
-                List<DeckAnimal> newAnimals = DeckManager.Instance.DequeueAnimals(
+                List<DeckAnimal> newAnimals = AnimalManager.Instance.GetRandomAnimals(
                     1,
                     menuWheelModifierChance
                 );
